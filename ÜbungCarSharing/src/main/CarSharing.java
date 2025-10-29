@@ -1,7 +1,5 @@
 package main;
 
-import java.util.Scanner;
-
 
 /*  int km = 10;
 	String str = "km<5";
@@ -12,9 +10,8 @@ import java.util.Scanner;
 */
 
 public class CarSharing {
-	
-	static final Scanner scan = new Scanner(System.in);
-	
+		
+	// settings TODO: settings file (JSON?)
 	static final int[] vehicleClasses = {1,2};
 	static final Integer[] kmNumbers = {100,250,500,1000,Integer.MAX_VALUE};
 	//costs = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]

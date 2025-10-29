@@ -8,17 +8,22 @@ public class Feldvariablen {
 	
 	static final Scanner scan = new Scanner(System.in);
 	
-	// settings
-	static final byte numColumns = 10;
+	// settings TODO: settings file (JSON?)
+	static final byte numColumns = 5;
 	static final byte xOffset = 4;
-	static final byte delimeterSpaces = 1;
+	static final String delimeter = ", ";
 	static final boolean isDynamicSpacing = false;
 	static final String errorMessage = "ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es erneut \n";
 	
 	
 	private static ArrayList<Integer> getNumbers() {
 		ArrayList<Integer> numbers = new ArrayList<Integer>();
+		
+		System.out.println("Geben Sie Ihre Nummern ein!");
+		System.out.println("Entweder mit Lehrzeichen oder mit Zeilenumbruch (Enter) getrennt"); //todo: spaces
+		
 		while (true) {
+			System.out.print("Eingabe: ");
 			String input = scan.nextLine();
 			if(input.equals("")) 
 				return numbers;
@@ -50,7 +55,7 @@ public class Feldvariablen {
 	
 	private static int getSpacing(ArrayList<Integer> numbers, int numberAmount) {
 		int highestNumDigits = 0;
-		for (int index=0; index<numberAmount+1; index++) {
+		for (int index=0; index<numberAmount; index++) {
 			int numDigits = String.valueOf(numbers.get(index)).length();
 			if (highestNumDigits < numDigits) {
 				highestNumDigits = numDigits;
@@ -60,188 +65,55 @@ public class Feldvariablen {
 	}
 	
 	
-	private static void displayNumbers(ArrayList<Integer> numbers, int numberAmount) {
-		System.out.print("\n[\n");
+	private static void displayNumbers(ArrayList<Integer> numbers) {
+		int numberAmount = numbers.size();
+		int[] columnWidths;
+		int spacing;
 		
-		int[] columnWidths = null;
-		
-		if (isDynamicSpacing) {
+		if (isDynamicSpacing)
 			columnWidths = getIndividualColumnWidths(numbers, numberAmount);
-			
-		} else {
-			int spacing = getSpacing(numbers, numberAmount);
-		}
+		else 
+			spacing = getSpacing(numbers, numberAmount);
 		
-		for(int index=0; index<numberAmount; index++) {
+		System.out.print("\n[");
+		
+		for(int index=0; index<numberAmount-1; index++) {
+			// indentation and linebreaks
 			if(index%numColumns==0) {
-				if (index!=0) {
-					System.out.print("\n");
-				}
+				System.out.print("\n");
 				for (int i=0; i<xOffset; i++) {
 					System.out.print(" ");
 				}
 			}
 			
-			if(index==numberAmount-1) {
-				System.out.printf("%d",numbers.get(index)); 
-			} else {
-				System.out.printf("%d",numbers.get(index));
-				int numDigits = String.valueOf(numbers.get(index)).length();
-				int columnWidth = columnWidths[index%numColumns];
-				for (int m=0; m<(columnWidth-numDigits); m++) {
-					System.out.print(" ");
-				}
-				System.out.print(",");
-				for (int m=0; m<delimeterSpaces; m++) {
-					System.out.print(" ");
-				}	
+			System.out.print(numbers.get(index));
+			System.out.print(delimeter);
+			
+			// spacing
+			int numDigits = String.valueOf(numbers.get(index)).length();
+			int neededSpaces;
+			if (isDynamicSpacing)
+				neededSpaces = columnWidths[index%numColumns]-numDigits;
+			else
+				neededSpaces = spacing-numDigits;
+			for (int m=0; m<(neededSpaces); m++) {
+				System.out.print(" ");
 			}
 		}
+		
+		System.out.printf("%d",numbers.get(numberAmount-1)); 
+		System.out.print("\n]\n");
 	}
 	
 	
-	private static Integer menu(int[] acceptedMenuOptions) {
-		int acceptedMenuOptionsAmount = acceptedMenuOptions.length;
-		
-		System.out.print("\n\n - Menü - \n");
-		System.out.print("Erneute Eingabe - 1 \n");
-		System.out.print("Programm Schließen - 0 \n");
-		
-		while (true) {
-			String input = scan.nextLine();
-			try {
-				int choice = Integer.parseInt(input);
-				
-				boolean isCorrect = false;
-				for (int index=0; index<acceptedMenuOptionsAmount; index++) {
-					if (choice == acceptedMenuOptions[index]) {
-						isCorrect = true;
-						break;
-					}
-				}
-				if (isCorrect)
-					return choice;
-			
-			} catch (Exception e) {
-				System.out.printf(errorMessage, input);
-			}
-			
-		}
-	}
-	
-	
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
 		while (true) {
 			ArrayList<Integer> numbers = getNumbers();
-			int numberAmount = numbers.size();
 			
-			System.out.print("Geben Sie Ihre Nummern ein!");
-			System.out.print("Entweder mit Lehrzeichen oder mit Zeilenumbruch (Enter) getrennt"); //todo: spaces
+			displayNumbers(numbers);
 			
-			displayNumbers(numbers, numberAmount);
-			
-			scan.nextLine();
-			
-			int[] acceptedMenuOptions = {0,1};
-			int menuOutput = menu(acceptedMenuOptions);
-			switch (menuOutput) {
-			case 0:
-				System.out.print("Programm wurde geschlossen!");
+			if (util.General.menu(null, null, null, null, null, null, null) == 0)
 				return;
-			case 1:
-				break;
-			}
-		}
-	}
-	
-	
-	
-	public static void mai(String[] args) throws InterruptedException {
-		
-		while (true) {
-			ArrayList<Integer> numbers = new ArrayList<Integer>();
-			boolean cont = true;
-			int i = 0;
-			while (cont==true) {
-				try {
-					System.out.printf("%d. Zahl: ", i+1);
-					String input = scan.nextLine();
-					
-					if(input.equals("")) {
-						throw new Exception("enter_pressed");
-					} else {
-						numbers.add(Integer.parseInt(input));
-					}
-				} catch(Exception e) {
-					System.out.print("\n[\n");
-					
-					// initialize columnWidths with zeroes
-					int columnWidths[] = new int[numColumns];
-					for (int n=0; n<numColumns; n++) {
-						columnWidths[n] = 0;
-					}
-					
-					for (int n=0; n<i; n++) {
-						int collumn = n%numColumns;
-						int numDigits = String.valueOf(numbers.get(n)).length();
-						if (columnWidths[collumn] < numDigits) {
-							columnWidths[collumn] = numDigits;
-						}
-					}
-					
-					for(int n=0; n<i; n++) {
-						if(n%numColumns==0) {
-							if (n!=0) {
-								System.out.print("\n");
-							}
-							for (int m=0; m<xOffset; m++) {
-								System.out.print(" ");
-							}
-						}
-						if(n==i-1) {
-							System.out.printf("%d",numbers.get(n)); 
-						} else {
-							System.out.printf("%d",numbers.get(n));
-							int numDigits = String.valueOf(numbers.get(n)).length();
-							int columnWidth = columnWidths[n%numColumns];
-							for (int m=0; m<(columnWidth-numDigits); m++) {
-								System.out.print(" ");
-							}
-							System.out.print(",");
-							for (int m=0; m<delimeterSpaces; m++) {
-								System.out.print(" ");
-							}	
-						}
-					}
-					System.out.print("\n]");
-					cont = false;
-				}
-				i++;			
-			}
-			
-			/* -- repeat code -- */
-			scan.nextLine();
-			System.out.print("\n\n - Menü - \n");
-			System.out.print("Erneute Eingabe - 1 \n");
-			System.out.print("Programm Schließen - 0 \n");
-			
-			while (true) {
-				String input = scan.nextLine();
-				try {
-					int choice = Integer.parseInt(input);
-					if (choice == 0) {
-						System.out.print("Geschlossen!");
-						scan.close();
-						return;
-					} else if (choice == 1) {
-						break;
-					}
-				} catch (Exception e) {}
-				
-//				String errorMessage = "ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es erneut \n";
-				System.out.printf(errorMessage, input);
-			}
-			/* -- repeat code -- */
 		}
 	}
 }
