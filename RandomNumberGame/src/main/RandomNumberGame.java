@@ -4,7 +4,7 @@ import java.util.Random;
 
 
 public class RandomNumberGame {
-
+	
     static Random rand = new Random();
     
     static int playOneVictories = 0;

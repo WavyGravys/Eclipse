@@ -25,10 +25,13 @@ public class CarSharing {
 	
 	
 	public static void main(String[] args) throws InterruptedException {
+		System.out.print("========== Wilkommen ==========");
 		while (true) {	
+			System.out.println();
 			int vehicleClass = util.Input.getMatchingInt("Fahrzeugklasse: ",null,null,vehicleClasses);
 			int drivenKm = (int)Math.ceil(util.Input.getDoubleInRange("Gefahrene Kilometer: ",null,null,null,(double)Integer.MAX_VALUE,null,null));
 			int hoursUsed = (int)Math.ceil(util.Input.getDoubleInRange("Stunden genutzt: ",null,null,null,(double)Integer.MAX_VALUE,null,null));
+			int vehicleClassIndex = vehicleClass-1; 
 			
 			// find the correct cost and calculate the distance cost
 			double cost = 0;
@@ -36,20 +39,19 @@ public class CarSharing {
 			boolean stop = false;
 			for (int index=0; index<maxIndex-1 && !stop; index++) {
 				if (drivenKm < kmNumbers[index]+1) {
-					cost = costs[vehicleClass][index] * drivenKm;
+					cost = costs[vehicleClassIndex][index] * drivenKm;
 					stop = true;
 				}
 			}
 			// if the for loop didn't get broken then use the last cost to calculate end cost
 			if (!stop) 
-				cost = costs[vehicleClass][maxIndex] * drivenKm;
+				cost = costs[vehicleClassIndex][maxIndex] * drivenKm;
 			
-			cost += hourCosts[vehicleClass] * (double)hoursUsed;
+			cost += hourCosts[vehicleClassIndex] * (double)hoursUsed;
 			
-			System.out.printf("Rechnungsbetrag: %.2f€", cost);
+			System.out.printf("Rechnungsbetrag: %.2f€ \n", cost);
 			
-			Thread.sleep(500);
-			int selectionInput = util.General.menu(null,null,null,null,null);
+			int selectionInput = util.General.menu(null,null,null,null,null,null,null);
 			if (selectionInput == 0)
 				return;
 		}
