@@ -39,7 +39,7 @@ public class Input {
 				System.out.printf(retryMessage, input);
 				
     		} catch (Exception e) {
-				System.out.printf("hello", input);
+				System.out.printf(retryMessage, input);
 			}
 		}
 	}
@@ -70,12 +70,12 @@ public class Input {
 	 * @param input string to be formatted 
 	 * @param formatString string to be formatted with <p>
 	 * @Defaults
-	 * <b>shouldFormat</b> <code>true</code> <br>
+	 * <b>shouldFormat</b> <code>false</code> <br>
 	 * <b>inputString</b> N/A <br>
 	 * <b>formatString</b> <code>"[^0-9-]"</code>
 	 */
 	public static String format(Boolean shouldFormat, String input, String formatString) {
-		shouldFormat = shouldFormat == null ? true : shouldFormat;
+		shouldFormat = shouldFormat == null ? false : shouldFormat;
 		formatString = formatString == null ? "[^0-9-]" : formatString;
 		
 		if (shouldFormat)
@@ -135,6 +135,62 @@ public class Input {
 		
 		String input = getString(preInputMessage, retryMessage, checkInput);
 		return Integer.parseInt(input);
+	}
+	
+	
+	/**
+	 * returns entered float, once one is input, that is within the given range.
+	 * @param preInputMessage printed before each input attempt
+	 * @param retryMessage printed after each failed input attempt
+	 * @param shouldFormat if the inpout should be formatted before parse
+	 * @param min the minimum
+	 * @param max the maximum
+	 * @param minInclusive if min should be allowed as within range
+	 * @param maxInclusive if max should be allowed as within range <p>
+	 * @Defaults
+	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
+	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
+	 * <b>shouldFormat</b> <code>true</code> <br>
+	 * <b>min</b> <code>0</code> <br>
+	 * <b>max</b> <code>1000000d</code> <br>
+	 * <b>minInclusive</b> <code>true</code> <br>
+	 * <b>maxInclusive</b> <code>true</code>
+	 */
+	public static float getFloatInRange(String preInputMessage, String retryMessage, Boolean shouldFormat,
+			Double min, Double max, Boolean minInclusive, Boolean maxInclusive) {
+		
+		final boolean _minInclusive = minInclusive == null ? true : minInclusive;
+		final boolean _maxInclusive = maxInclusive == null ? true : maxInclusive;
+		final double _min = min == null ? 0 : min;
+		final double _max = max == null ? 1000000d : max;
+		
+		Function checkInput = new Function() {
+			public boolean function(String input) {
+				input = format(shouldFormat, input, "[^0-9.-]");
+				float inputFloat = Float.parseFloat(input);
+				if (Double.isInfinite(inputFloat)) // over/under-flow check
+					return false;
+				
+				boolean aboveMin;
+				boolean belowMax;
+				if (_minInclusive && inputFloat >= _min)
+					aboveMin = true;
+				else if (!_minInclusive && inputFloat > _min)
+					aboveMin = true;
+				else
+					aboveMin = false;
+				if (_maxInclusive && inputFloat <= _max) 
+					belowMax = true;
+				else if (!_maxInclusive && inputFloat < _max)
+					belowMax = true;
+				else
+					belowMax = false;
+				return aboveMin && belowMax;
+			}
+		};
+		
+		String input = getString(preInputMessage, retryMessage, checkInput);
+		return Float.parseFloat(input);
 	}
 	
 	

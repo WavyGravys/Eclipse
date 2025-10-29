@@ -4,7 +4,7 @@ package util;
 public class General {
 	
 	/**
-	 * prints menu and then returns entered choice as an in, once one is input, that matches one of the acceptedMenuOptions
+	 * prints menu and then returns entered choice as a byte, once one is input, that matches one of the acceptedMenuOptions
 	 * @param menuString the string that is printed to show the menu
 	 * @param preInputMessage printed before each input attempt
 	 * @param retryMessage printed after each failed input attempt
@@ -14,23 +14,24 @@ public class General {
 	 * @param loadingBarSpeed how fast the loading bar is printed <p>
 	 * @Defaults
 	 * <b>menuString</b> <code>"\n========= Menü =========\n 1 - Erneute Eingabe \n 0 - Programm Schließen \n"<code> <br>
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
+	 * <b>preInputMessage</b> <code>"Auswahl: "<code> <br>
 	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
 	 * <b>shouldFormat</b> <code>true</code> <br>
 	 * <b>acceptedMenuOptions</b> <code>new int[] {0,1}</code>
 	 * <b>loadingBarDotAmount</b> <code>22<code> <br>
 	 * <b>loadingBarSpeed</b> <code>1<code>
 	 */
-	public static int menu(String menuString, String preInputMessage, String retryMessage, 
+	public static byte menu(String menuString, String preInputMessage, String retryMessage, 
 			Boolean shouldFormat, int[] acceptedMenuOptions, Integer loadingBarDotAmount, Integer loadingBarSpeed) {
 		
 		menuString = menuString == null ? "\n========= Menü =========\n 1 - Erneute Eingabe \n 0 - Programm Schließen \n" : menuString;
+		preInputMessage = preInputMessage == null ? "Auswahl: " : preInputMessage;
 		shouldFormat = shouldFormat == null ? true : shouldFormat;
 		acceptedMenuOptions = acceptedMenuOptions == null ? new int[] {0,1} : acceptedMenuOptions;
 		
 		loadingBar(loadingBarDotAmount, loadingBarSpeed);
 		System.out.print(menuString);
-		return Input.getMatchingInt(preInputMessage, retryMessage, shouldFormat, acceptedMenuOptions);
+		return (byte)Input.getMatchingInt(preInputMessage, retryMessage, shouldFormat, acceptedMenuOptions);
 	}
 	
 	
