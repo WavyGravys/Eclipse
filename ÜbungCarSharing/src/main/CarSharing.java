@@ -21,38 +21,33 @@ public class CarSharing {
 	static final Double[][] costs = {{0.33,0.31,0.29,0.27,0.25},{0.38,0.36,0.34,0.32,0.30}};
 	static final Double[] hourCosts = {3.00,4.00};
 	
-	static final int maxIndex = kmNumbers.length - 1;
+	
+	private static int getInput(String preInputMessage) {
+		return util.Input.getIntInRange(preInputMessage,null,null,null,(double)Integer.MAX_VALUE,null,null);
+	}
 	
 	
 	public static void main(String[] args) throws InterruptedException {
 		System.out.print("========== Wilkommen ==========");
 		while (true) {	
 			System.out.println();
-			int vehicleClass = util.Input.getMatchingInt("Fahrzeugklasse: ",null,null,vehicleClasses);
-			int drivenKm = (int)Math.ceil(util.Input.getDoubleInRange("Gefahrene Kilometer: ",null,null,null,(double)Integer.MAX_VALUE,null,null));
-			int hoursUsed = (int)Math.ceil(util.Input.getDoubleInRange("Stunden genutzt: ",null,null,null,(double)Integer.MAX_VALUE,null,null));
-			int vehicleClassIndex = vehicleClass-1; 
+			int vehicleClassIndex = util.Input.getMatchingInt("Fahrzeugklasse: ",null,null,vehicleClasses) - 1;
+			int drivenKm = getInput("Gefahrene Kilometer: ");
+			System.out.println(drivenKm);
+			int hoursUsed = getInput("Stunden genutzt: ");
 			
-			// find the correct cost and calculate the distance cost
 			double cost = 0;
-			
-			boolean stop = false;
-			for (int index=0; index<maxIndex-1 && !stop; index++) {
-				if (drivenKm < kmNumbers[index]+1) {
+			for (int index=0; index<kmNumbers.length; index++) {
+				if (drivenKm <= kmNumbers[index]) {
 					cost = costs[vehicleClassIndex][index] * drivenKm;
-					stop = true;
+					break;
 				}
 			}
-			// if the for loop didn't get broken then use the last cost to calculate end cost
-			if (!stop) 
-				cost = costs[vehicleClassIndex][maxIndex] * drivenKm;
-			
 			cost += hourCosts[vehicleClassIndex] * (double)hoursUsed;
 			
 			System.out.printf("Rechnungsbetrag: %.2f€ \n", cost);
 			
-			int selectionInput = util.General.menu(null,null,null,null,null,null,null);
-			if (selectionInput == 0)
+			if (util.General.menu(null,null,null,null,null,null,null) == 0)
 				return;
 		}
 	}
