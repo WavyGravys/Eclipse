@@ -10,26 +10,30 @@ public class General {
 	 * @param retryMessage printed after each failed input attempt
 	 * @param shouldFormat if the inpout should be formatted before parse
 	 * @param acceptedMenuOptions array of ints, of which one needs to math the input
+	 * @param shouldDisplayLoadingBar controls if the loading bar should be displayed
 	 * @param loadingBarDotAmount how many dots should be printed as the loading bar
 	 * @param loadingBarSpeed how fast the loading bar is printed <p>
 	 * @Defaults
 	 * <b>menuString</b> <code>"\n========= Menü =========\n 1 - Erneute Eingabe \n 0 - Programm Schließen \n"<code> <br>
 	 * <b>preInputMessage</b> <code>"Auswahl: "<code> <br>
 	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code> <br>
-	 * <b>acceptedMenuOptions</b> <code>new int[] {0,1}</code>
+	 * <b>shouldFormat</b> <code>false</code> <br>
+	 * <b>acceptedMenuOptions</b> <code>new int[] {0,1}</code> <br>
+	 * <b>shouldDisplayLoadingBar</b> <code>true</code> <br>
 	 * <b>loadingBarDotAmount</b> <code>22<code> <br>
 	 * <b>loadingBarSpeed</b> <code>1<code>
 	 */
-	public static byte menu(String menuString, String preInputMessage, String retryMessage, 
-			Boolean shouldFormat, int[] acceptedMenuOptions, Integer loadingBarDotAmount, Integer loadingBarSpeed) {
+	public static byte menu(String menuString, String preInputMessage, String retryMessage, Boolean shouldFormat, 
+			int[] acceptedMenuOptions, Boolean shouldDisplayLoadingBar, Integer loadingBarDotAmount, Integer loadingBarSpeed) {
 		
 		menuString = menuString == null ? "\n========= Menü =========\n 1 - Erneute Eingabe \n 0 - Programm Schließen \n" : menuString;
 		preInputMessage = preInputMessage == null ? "Auswahl: " : preInputMessage;
-		shouldFormat = shouldFormat == null ? true : shouldFormat;
 		acceptedMenuOptions = acceptedMenuOptions == null ? new int[] {0,1} : acceptedMenuOptions;
+		shouldDisplayLoadingBar = shouldDisplayLoadingBar == null ? true : shouldDisplayLoadingBar;
 		
-		loadingBar(loadingBarDotAmount, loadingBarSpeed);
+		if (shouldDisplayLoadingBar)
+			loadingBar(loadingBarDotAmount, loadingBarSpeed);
+		
 		System.out.print(menuString);
 		return (byte)Input.getMatchingInt(preInputMessage, retryMessage, shouldFormat, acceptedMenuOptions);
 	}
@@ -54,5 +58,20 @@ public class General {
 			System.out.print(".");
 		}
 		System.out.print("]");
+	}
+	
+	
+	public static boolean basicMenu() {
+		return menu(null,null,null,null,null,null,null,null) == 0;
+	}
+	
+	
+	public static byte customChoicesMenu(String menuString, int[] acceptedMenuOptions) {
+		return menu(menuString,null,null,null,acceptedMenuOptions,null,null,null);
+	}
+	
+	
+	public static byte instantCustomChoicesMenu(String menuString, int[] acceptedMenuOptions) {
+		return menu(menuString,null,null,null,acceptedMenuOptions,false,null,null);
 	}
 }

@@ -3,6 +3,16 @@ package util;
 
 public class Array {
 	
+	public static void printInt(int[] array) {
+		System.out.print("[");
+		for (int index=0; index<array.length-1; index++) {
+			System.out.print(array[index]);
+			System.out.print(", ");
+		}
+		System.out.print(array[array.length-1]+"]");
+	}
+	
+	
 	/**
 	 * returns sum of array
 	 * @param array input array <p>
@@ -25,7 +35,7 @@ public class Array {
 	 * <b>array</b> <code>N/A<code> 
 	 */
 	public static int prod(int[] array) {
-		int prod = 0;
+		int prod = 1;
 		for (int index=0; index<array.length; index++) {
 			prod *= array[index];
 		}

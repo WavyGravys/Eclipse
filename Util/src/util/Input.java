@@ -16,18 +16,18 @@ public class Input {
 	 * @param extraParameters (Object) array with extra parameters for tryInputFunc <p>
 	 * @Defaults
 	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
+	 * <b>retryMessage</b> <code>"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n"<code> <br>
 	 * <b>checkInputFunc</b> N/A <br>
 	 * <b>extraParameters</b> N/A
 	 */
 	public static String getString(String preInputMessage, String retryMessage, Function checkInputFunc) {
 		preInputMessage = preInputMessage == null ? "Eingabe: " : preInputMessage;
-		retryMessage = retryMessage == null ? "ERROR: %s ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n" : retryMessage;
+		retryMessage = retryMessage == null ? "ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n" : retryMessage;
 		
 		String input;
     	while (true) {
     		System.out.print(preInputMessage);
-    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input.
+    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input. (doesnt work at the start)
     			System.out.println(" ");
     		input = scan.nextLine();
     		// if the checkInputFunc throws any exception or returns false we try again
