@@ -61,16 +61,35 @@ public class General {
 	}
 	
 	
+	/**
+	 * returns true if the user chooses "Programm Schließen" in a small menu
+	 */
 	public static boolean basicMenu() {
 		return menu(null,null,null,null,null,null,null,null) == 0;
 	}
 	
 	
+	/**
+	 * returns choice that the user enters into a small menu, with a loading bar
+	 * @param menuString String that is printed as the menu
+	 * @param acceptedMenuOptions a list of all options the user should be able to enter into the menu <p>
+	 * @Defaults
+	 * <b>menuString</b> <code>N/A<code> <br>
+	 * <b>acceptedMenuOptions</b> <code>N/A<code> <br>
+	 */
 	public static byte customChoicesMenu(String menuString, int[] acceptedMenuOptions) {
 		return menu(menuString,null,null,null,acceptedMenuOptions,null,null,null);
 	}
 	
 	
+	/**
+	 * returns choice that the user enters into a small menu, without a loading bar
+	 * @param menuString String that is printed as the menu
+	 * @param acceptedMenuOptions a list of all options the user should be able to enter into the menu <p>
+	 * @Defaults
+	 * <b>menuString</b> <code>N/A<code> <br>
+	 * <b>acceptedMenuOptions</b> <code>N/A<code> <br>
+	 */
 	public static byte instantCustomChoicesMenu(String menuString, int[] acceptedMenuOptions) {
 		return menu(menuString,null,null,null,acceptedMenuOptions,false,null,null);
 	}

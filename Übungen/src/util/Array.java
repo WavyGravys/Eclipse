@@ -3,6 +3,12 @@ package util;
 
 public class Array {
 	
+	/**
+	 * prints the array
+	 * @param array input array <p>
+	 * @Defaults
+	 * <b>array</b> <code>N/A<code> 
+	 */
 	public static void printInt(int[] array) {
 		System.out.print("[");
 		for (int index=0; index<array.length-1; index++) {
@@ -13,6 +19,12 @@ public class Array {
 	}
 	
 	
+	/**
+	 * returns the array as a String
+	 * @param array input array <p>
+	 * @Defaults
+	 * <b>array</b> <code>N/A<code> 
+	 */
 	public static String intToString(int[] array) {
 		String returnString = "[";
 		for (int index=0; index<array.length-1; index++) {
