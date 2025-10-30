@@ -35,7 +35,7 @@ public class Feldvariablen {
 		System.out.println("\nGeben Sie Ihre Nummern ein");
 		while (true) {
     		System.out.print("Eingabe: ");
-    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input. (doesnt work at the start)
+    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input. (TODO: doesnt work at the start)
     			System.out.println(" ");
     		input = scan.nextLine();
 			

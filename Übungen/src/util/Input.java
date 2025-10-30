@@ -27,7 +27,7 @@ public class Input {
 		String input;
     	while (true) {
     		System.out.print(preInputMessage);
-    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input. (doesnt work at the start)
+    		if (!scan.hasNextLine()) // to handle the user pressing "ctrl+z", while scan is waiting for input. (TODO: doesnt work at the start)
     			System.out.println(" ");
     		input = scan.nextLine();
     		// if the checkInputFunc throws any exception or returns false we try again
