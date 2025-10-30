@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class TextIO {
 	
-	public static void writeMatrix {
+	public static void writeMatrix() {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
 			writer.write("hello");
@@ -19,7 +19,7 @@ public class TextIO {
 	}
 	
 	
-	public static void write {
+	public static void write() {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
 			writer.write("hello");

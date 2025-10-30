@@ -66,12 +66,7 @@ public class Feldvariablen {
 		ArrayList<Integer> numbers = new ArrayList<Integer>();
 		int numberStartIndex = 0;
 		char currentChar;
-		boolean isFinished = false;
-		enum LastChar {
-			NUMBER,
-			COMMA,
-			SPACE
-		}
+		enum LastChar {NUMBER, COMMA, SPACE}
 		LastChar lastChar = LastChar.NUMBER;
 		
 		input = input.replaceAll("[^0-9, ]", "");
@@ -81,61 +76,25 @@ public class Feldvariablen {
 		
 		for (int index=0; index<inputCharArray.length; index++) {
 			currentChar = inputCharArray[index];
-			
-			//System.out.println();
-			//System.out.print("current char: " + currentChar);
-			//System.out.print("; last char type: " + lastChar);
-			
 			switch (currentChar) {
-			case 'X':
-			case 'x':
-				
-				isFinished = true;
-				break;
-			
 			case ',':
-				switch (lastChar) {
-				case LastChar.NUMBER:
+				if (lastChar == LastChar.NUMBER)
 					numbers.add(Integer.parseInt(input.substring(numberStartIndex,index)));
-					break;
-				case LastChar.COMMA:
-					//throw new NumberFormatException("two commas in a row");
-				case LastChar.SPACE:
-					break;
-				}
 				lastChar = LastChar.COMMA;
 				break;
-			
 			case ' ':
-				switch (lastChar) {
-				case LastChar.NUMBER:
+				if (lastChar == LastChar.NUMBER)
 					numbers.add(Integer.parseInt(input.substring(numberStartIndex,index)));
-					break;
-				case LastChar.COMMA:
-				case LastChar.SPACE:
-					break;
-				}
 				lastChar = LastChar.SPACE;
 				break;
-			
 			default: // if charAtIndex is a number
-				switch (lastChar) {
-				case LastChar.NUMBER:
-					break;
-				case LastChar.COMMA:
-				case LastChar.SPACE:
+				if (lastChar == LastChar.COMMA || lastChar == LastChar.SPACE)
 					numberStartIndex = index;
-					break;
-				}
-				
 				if (index == inputCharArray.length-1)
 					numbers.add(Integer.parseInt(input.substring(numberStartIndex,index+1)));
-				
 				lastChar = LastChar.NUMBER;
 				break;
 			}
-			if (isFinished)
-				break;
 		}
 		
 		int [] returnArray = convertArrayListToArray(numbers);

@@ -13,6 +13,17 @@ public class Array {
 	}
 	
 	
+	public static String intToString(int[] array) {
+		String returnString = "[";
+		for (int index=0; index<array.length-1; index++) {
+			System.out.print(array[index]);
+			System.out.print(", ");
+		}
+		System.out.print(array[array.length-1]+"]");
+		return returnString;
+	}
+	
+	
 	/**
 	 * returns sum of array
 	 * @param array input array <p>
