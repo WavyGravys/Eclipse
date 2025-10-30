@@ -46,7 +46,7 @@ public class OverUnderFlowCheck {
 				return true;
 			
 			byte[] maxIntArray = new byte[] {2,1,4,7,4,8,3,6,4,7};
-			byte[] minIntArray = new byte[] {2,1,4,7,4,8,3,6,4,8};
+			//byte[] minIntArray = new byte[] {2,1,4,7,4,8,3,6,4,8};
 			boolean equalUntilNow = true;
 			for (int index=0; index<input.length(); index++) {
 				if (numberArray[index] > maxIntArray[index])
@@ -75,7 +75,7 @@ public class OverUnderFlowCheck {
 	public static void main(String[] args) { // testing
 		//final String errorMessage = "ERROR: %s is not a valid input. Please try again. \n";
 		String input = scan.nextLine();
-		input = util.Input.format(true, input, "[^0-9.-]");
+		//input = util.Input.format(true, input, "[^0-9.-]");
 		System.out.printf("%b - overflow? - ", isOverOrUnderFlow(input, MainTypes.INT));
 
 	}
