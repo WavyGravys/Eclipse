@@ -2,408 +2,240 @@ package util;
 
 import java.util.Scanner;
 
-@FunctionalInterface
-interface Function {
-	boolean function(String inputString);
-}
 
 public class Input {
+	
+	public static InputBuilder builder() {
+		return new InputBuilder();
+	}
+	
+	public static class InputBuilder {
+		private String prompt = "Eingabe: ";
+		private String error = 
+				"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n";
+		private boolean shouldFormat = false;
+		private boolean minInclusive = true;
+		private boolean maxInclusive = true;
+		private double min = 0;
+		private double max = Integer.MAX_VALUE;
+		
+		public InpuBuilder prompt(String prompt) {
+			this.prompt = prompt;
+			return this;
+		}
+		
+	}
+	
+	public static final String DEFAULT_PROMPT = "Eingabe: ";
+	public static final String DEFAULT_ERROR = 
+			"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n";
+	public static final boolean DEFAULT_SHOULD_FORMAT = false;
+	public static final boolean DEFAULT_MIN_INCLUSIVE = true;
+	public static final boolean DEFAULT_MAX_INCLUSIVE = true;
+	public static final double DEFAULT_MIN = 0;
+	public static final double DEFAULT_MAX = Integer.MAX_VALUE;
+	
 	private static Scanner scan = new Scanner(System.in); // static used for readability and ease of use
 	
-	/**
-	 * returns entered string once one is input, that is valid according to the function tryInputFunc.
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param checkInputFunc custom (boolean) function which decides if the input attempt is successful
-	 * @param extraParameters (Object) array with extra parameters for tryInputFunc <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n"<code> <br>
-	 * <b>checkInputFunc</b> N/A <br>
-	 * <b>extraParameters</b> N/A
-	 */
-	public static String getString(String preInputMessage, String retryMessage, Function checkInputFunc) {
-		preInputMessage = preInputMessage == null ? "Eingabe: " : preInputMessage;
-		retryMessage = retryMessage == null ? "ERROR: \"%s\" ist keine valide Eingabe. "
-											+ "Versuchen Sie es bitte erneut. \n" : retryMessage;
-		String input;
-    	while (true) {
-    		System.out.print(preInputMessage);
-    		if (!scan.hasNextLine()) { // to handle the user pressing "ctrl+z", while scan is waiting for input. (FIXME: doesnt work at the start)
+	
+    /**
+     * Returns a validated string from user input.
+     * Repeatedly prompts until the input passes validation.
+     * @param prompt message displayed before each input attempt (default: "Eingabe: ")
+     * @param error message for invalid input, use %s for the input value
+     * @param checkInputFunc validation predicate that returns true if input is valid
+     * @return the first valid input string
+     */
+	public static String getString(String prompt, String error, 
+			util.Function<String, Boolean> validateInput) {
+		
+		while (true) {
+    		System.out.print(prompt);
+    		
+    		if (!scan.hasNextLine()) { // XXX: handle CTRL+Z 
     			System.out.println(" ");
     		}
-    		input = scan.nextLine();
-    		// if the checkInputFunc throws any exception or returns false we try again
-    		try {
-				if (checkInputFunc.function(input)) {
-					return input;
-				}
-				System.out.printf(retryMessage, input);
-				
-    		} catch (Exception e) {
-				System.out.printf(retryMessage, input);
-			}
+    		
+    		String input = scan.nextLine();
+    		
+    		if (isValidInput(input, validateInput)) {
+    			return input;
+    		}
+    		
+    		System.out.printf(error, input);
 		}
 	}
 	
-	/**
-	 * returns entered int, once one is input, that is within the given range.
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse
-	 * @param min the minimum
-	 * @param max the maximum
-	 * @param minInclusive if min should be allowed as within range
-	 * @param maxInclusive if max should be allowed as within range <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code> <br>
-	 * <b>min</b> <code>0</code> <br>
-	 * <b>max</b> <code>Integer.MAX_VALUE</code> <br>
-	 * <b>minInclusive</b> <code>true</code> <br>
-	 * <b>maxInclusive</b> <code>true</code>
-	 */
-	public static int getIntInRange(String preInputMessage, String retryMessage, 
+	private static boolean isValidInput(String input, 
+			util.Function<String, Boolean> validateInput) {
+		if (input == null || input.isEmpty()) {
+			return false;
+		}
+		
+		try {
+			return validateInput.apply(input);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	// overload: only validation function
+	public static String getString(util.Function<String, Boolean> 
+								   validateInput) {
+		return getString(DEFAULT_PROMPT, DEFAULT_ERROR, validateInput);
+	}
+	
+	
+    /**
+     * Returns an entered number once a valid non-empty input is provided.
+     * @param prompt
+     * @param error
+     * @return the validated non-empty String
+     */
+	public static String getNonEmptyString(String prompt, String error) {
+		util.Function<String, Boolean> validateInput = input -> {
+			return !input.equals("");
+		};
+		
+		return getString(prompt, error, validateInput);
+	}
+
+	// overload: default
+	public static String getNonEmptyString() {
+	    return getNonEmptyString(DEFAULT_PROMPT, DEFAULT_ERROR);
+	}
+	
+	
+    /**
+     * Returns an entered number once valid input within the given range is provided.
+     * @param type the type of number to parse (Integer, Double, etc.)
+     * @param prompt message before each input attempt
+     * @param error message after invalid input
+     * @param shouldFormat whether to strip non-numeric characters before parsing
+     * @param min minimum value (default: 0)
+     * @param max maximum value (default: Integer.MAX_VALUE)
+     * @param minInclusive whether min is inclusive (default: true)
+     * @param maxInclusive whether max is inclusive (default: true)
+     * @return the validated number
+     */
+	public static <T extends Number> T getNumberInRange(
+			util.Numbers type, String prompt, String error, 
 			Boolean shouldFormat, Double min, Double max, 
 			Boolean minInclusive, Boolean maxInclusive) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		final boolean _minInclusive = minInclusive == null ? true : minInclusive;
-		final boolean _maxInclusive = maxInclusive == null ? true : maxInclusive;
-		final double _min = min == null ? 0 : min;
-		final double _max = max == null ? Integer.MAX_VALUE : max;
 		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
-				int inputInt = Integer.parseInt(input);
-				boolean aboveMin;
-				boolean belowMax;
-				
-				if (_minInclusive && inputInt >= _min) {
-					aboveMin = true;
-				} else if (!_minInclusive && inputInt > _min) {
-					aboveMin = true;
-				} else {
-					aboveMin = false;
-				}
-				if (_maxInclusive && inputInt <= _max) {
-					belowMax = true;
-				} else if (!_maxInclusive && inputInt < _max) {
-					belowMax = true;
-				} else {
-					belowMax = false;
-				}
-				
-				return aboveMin && belowMax;
-			}
+		util.Function<String, Boolean> validateInput = input -> {
+			input = shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
+			Number number = util.Numbers.parseAs(input, type);
+			return util.Math.isInRange(number, min, max, minInclusive, maxInclusive);
 		};
 		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Integer.parseInt(input);
+		String input = getString(prompt, error, validateInput);
+		return util.Numbers.parseAs(input, type);
 	}
 	
+    // overload: type and range (inclusive)
+    public static <T extends Number> T getNumberInRange(
+    		util.Numbers type, double min, double max) {
+       
+    	return getNumberInRange(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
+            DEFAULT_SHOULD_FORMAT, min, max, 
+            DEFAULT_MIN_INCLUSIVE, DEFAULT_MAX_INCLUSIVE);
+    }
+    
+    // overload: with inclusivity flags
+    public static <T extends Number> T getNumberInRange(
+    		util.Numbers type, double min, double max, 
+    		boolean minInclusive, boolean maxInclusive) {
+        
+    	return getNumberInRange(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
+            DEFAULT_SHOULD_FORMAT, min, max, minInclusive, maxInclusive);
+    }
+	
+    // overload: with prompt
+    public static <T extends Number> T getNumberInRange(
+    		util.Numbers type, String prompt, double min, double max, 
+    		boolean minInclusive, boolean maxInclusive) {
+        
+    	return getNumberInRange(type, prompt, DEFAULT_ERROR, 
+            DEFAULT_SHOULD_FORMAT, min, max, minInclusive, maxInclusive);
+    }
+    
+	
 	/**
-	 * returns entered float, once one is input, that is within the given range.
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
+	 * Returns an entered number once valid input 
+	 * matching one of numbersToMatch is provided.
+	 * @param prompt printed before each input attempt
+	 * @param error printed after each failed input attempt
 	 * @param shouldFormat if the inpout should be formatted before parse
-	 * @param min the minimum
-	 * @param max the maximum
-	 * @param minInclusive if min should be allowed as within range
-	 * @param maxInclusive if max should be allowed as within range <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code> <br>
-	 * <b>min</b> <code>0</code> <br>
-	 * <b>max</b> <code>1000000d</code> <br>
-	 * <b>minInclusive</b> <code>true</code> <br>
-	 * <b>maxInclusive</b> <code>true</code>
+	 * @param numbersToMatch array of ints, of which one needs to math the input
+	 * @returns the validated number
 	 */
-	public static float getFloatInRange(String preInputMessage, String retryMessage, 
-			Boolean shouldFormat, Double min, Double max, 
-			Boolean minInclusive, Boolean maxInclusive) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		final boolean _minInclusive = minInclusive == null ? true : minInclusive;
-		final boolean _maxInclusive = maxInclusive == null ? true : maxInclusive;
-		final double _min = min == null ? 0 : min;
-		final double _max = max == null ? 1000000d : max;
+	public static <T extends Number> T getMatchingNumber(
+			util.Numbers type, String prompt, String error, 
+			Boolean shouldFormat, Number[] numbersToMatch) {
 		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-				float inputFloat = Float.parseFloat(input);
-				boolean aboveMin;
-				boolean belowMax;
-				
-				if (Double.isInfinite(inputFloat)) { // over/under-flow check
-					return false;
+		util.Function<String, Boolean> validateInput = input -> {
+			input = shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
+			Number inputNumber = util.Numbers.parse(input);
+			
+			for (int index = 0; index < numbersToMatch.length; index++) {
+				if (inputNumber == numbersToMatch[index]) {
+					return true;
 				}
-				
-				if (_minInclusive && inputFloat >= _min) {
-					aboveMin = true;
-				} else if (!_minInclusive && inputFloat > _min) {
-					aboveMin = true;
-				} else {
-					aboveMin = false;
-				}
-				if (_maxInclusive && inputFloat <= _max) {
-					belowMax = true;
-				} else if (!_maxInclusive && inputFloat < _max) {
-					belowMax = true;
-				} else {
-					belowMax = false;
-				}
-				
-				return aboveMin && belowMax;
 			}
+			
+			return false;
 		};
 		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Float.parseFloat(input);
+		String input = getString(prompt, error, validateInput);
+		return util.Numbers.parseAs(input, type);
 	}
 	
-	/**
-	 * returns entered double, once one is input, that is within the given range.
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse
-	 * @param min the minimum
-	 * @param max the maximum
-	 * @param minInclusive if min should be allowed as within range
-	 * @param maxInclusive if max should be allowed as within range <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code> <br>
-	 * <b>min</b> <code>0</code> <br>
-	 * <b>max</b> <code>Double.MAX_VALUE</code> <br>
-	 * <b>minInclusive</b> <code>true</code> <br>
-	 * <b>maxInclusive</b> <code>true</code>
-	 */
-	public static double getDoubleInRange(String preInputMessage, String retryMessage, 
-			Boolean shouldFormat, Double min, Double max, 
-			Boolean minInclusive, Boolean maxInclusive) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		final double _min = min == null ? 0 : min;
-		final double _max = max == null ? Double.MAX_VALUE : max;
-		final boolean _minInclusive = minInclusive == null ? true : minInclusive;
-		final boolean _maxInclusive = maxInclusive == null ? true : maxInclusive;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-				double inputDouble = Double.parseDouble(input);
-				boolean aboveMin;
-				boolean belowMax;
-				
-				if (Double.isInfinite(inputDouble)) { // over/under-flow check
-					return false;
-				}
-				
-				if (_minInclusive && inputDouble >= _min) {
-					aboveMin = true;
-				} else if (!_minInclusive && inputDouble > _min) {
-					aboveMin = true;
-				} else {
-					aboveMin = false;
-				}
-				if (_maxInclusive && inputDouble <= _max) {
-					belowMax = true;
-				} else if (!_maxInclusive && inputDouble < _max) {
-					belowMax = true;
-				} else {
-					belowMax = false;
-				}
-				
-				return aboveMin && belowMax;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Double.parseDouble(input);
+	// overload: only numbersToMatch
+	public static <T extends Number> T getMatchingNumber(util.Numbers type, Number[] numbersToMatch) {
+		return getMatchingNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
+							  DEFAULT_SHOULD_FORMAT, numbersToMatch);
 	}
 	
-	/**
-	 * returns entered string once one is input, that is non-empty.
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "</code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"</code>
-	 */
-	public static String getNonEmptyString(String preInputMessage, String retryMessage) {
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				return input.equals("");
-			}
-		};
-		
-		return getString(preInputMessage, retryMessage, checkInput);
+	// overload: numbersToMatch and shouldFormat
+	public static <T extends Number> T getMatchingNumber(util.Numbers type, Number[] numbersToMatch, boolean shouldFormat) {
+		return getMatchingNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
+				shouldFormat, numbersToMatch);
 	}
 	
-	/**
-	 * returns entered int, once one is input, that matches at least in in intsToMatch. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse
-	 * @param intsToMatch array of ints, of which one needs to math the input <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code> <br>
-	 * <b>intsToMatch</b> N/A
-	 */
-	public static int getMatchingInt(String preInputMessage, String retryMessage, 
-			Boolean shouldFormat, int[] intsToMatch) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
-				int inputInt = Integer.parseInt(input);
-				for (int index = 0; index < intsToMatch.length; index++)
-					if (inputInt == intsToMatch[index]) {
-						return true;
-					}
-				return false;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Integer.parseInt(input);
-	}
 	
 	/**
-	 * returns entered byte, once one is input, that is valid. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code>
+	 * Returns an entered Number once valid input 
+	 * of util.Numbers type is provided.
+	 * @param prompt
+	 * @param error
+	 * @param shouldFormat
+	 * @return returns valid number of given type 
 	 */
-	public static byte getByte(String preInputMessage, String retryMessage, Boolean shouldFormat) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
+	public static <T extends Number> T getNumber(util.Numbers type, String prompt, String error, Boolean shouldFormat) {
 		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
+		util.Function<String, Boolean> validateInput = input -> {
+				input = shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
 				Byte.parseByte(input);
 				return true;
-			}
 		};
 		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Byte.parseByte(input);
+		String input = getString(prompt, error, validateInput);
+		return util.Numbers.parseAs(input, type);
 	}
 	
-	/**
-	 * returns entered int, once one is input, that is valid. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code>
-	 */
-	public static int getInt(String preInputMessage, String retryMessage, Boolean shouldFormat) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
-				Integer.parseInt(input);
-				return true;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Integer.parseInt(input);
+	// overload: only type
+	public static <T extends Number> T getNumber(util.Numbers type) {
+		return getNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, DEFAULT_SHOULD_FORMAT);
 	}
 	
-	/**
-	 * returns entered long, once one is input, that is valid. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code>
-	 */
-	public static long getLong(String preInputMessage, String retryMessage, Boolean shouldFormat) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-				Long.parseLong(input);
-				return true;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Long.parseLong(input);
+	// overload: type and prompt
+	public static <T extends Number> T getNumber(util.Numbers type, String prompt) {
+		return getNumber(type, prompt, DEFAULT_ERROR, DEFAULT_SHOULD_FORMAT);
 	}
 	
-	/**
-	 * returns entered float, once one is input, that is valid. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code>
-	 */
-	public static float getFloat(String preInputMessage, String retryMessage, Boolean shouldFormat) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-				float inputFloat = Float.parseFloat(input);
-				if (Double.isInfinite(inputFloat)) { // over/under-flow check
-					return false;
-				}
-				return true;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Float.parseFloat(input);
+	// overload: type and shouldFormat
+	public static <T extends Number> T getNumber(util.Numbers type, boolean shouldFormat) {
+		return getNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, shouldFormat);
 	}
-	
-	/**
-	 * returns entered double, once one is input, that is valid. 
-	 * @param preInputMessage printed before each input attempt
-	 * @param retryMessage printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse <p>
-	 * @Defaults
-	 * <b>preInputMessage</b> <code>"Eingabe: "<code> <br>
-	 * <b>retryMessage</b> <code>"ERROR: %s is not a valid input. Please try again \n"<code> <br>
-	 * <b>shouldFormat</b> <code>true</code>
-	 */
-	public static double getDouble(String preInputMessage, String retryMessage, Boolean shouldFormat) {
-		final boolean _shouldFormat = shouldFormat == null ? true : shouldFormat;
-		
-		Function checkInput = new Function() {
-			public boolean function(String input) {
-				input = _shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-				double inputDouble = Double.parseDouble(input);
-				if (Double.isInfinite(inputDouble)) { // over/under-flow check
-					return false;
-				}
-				return true;
-			}
-		};
-		
-		String input = getString(preInputMessage, retryMessage, checkInput);
-		return Double.parseDouble(input);
-	}
-	
 }

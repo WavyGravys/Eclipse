@@ -31,7 +31,7 @@ public class Feldvariablen {
 		System.out.print("viel Spaß! \n");
 	}
 	
-	private static int[] getNumbers() {
+	private static Integer[] getNumbers() {
 		ArrayList<Integer> numbers = new ArrayList<Integer>();
 		String input;
 		
@@ -52,7 +52,7 @@ public class Feldvariablen {
 			}
 			
 			try {
-				int[] numbersToAdd = parseInput(input);
+				Integer[] numbersToAdd = parseInput(input);
 				
 				for (int index = 0; index < numbersToAdd.length; index++)
 					numbers.add(numbersToAdd[index]);
@@ -64,12 +64,12 @@ public class Feldvariablen {
 		}
 	}
 	
-	private static int[] parseInput(String input) throws Exception {
+	private static Integer[] parseInput(String input) throws Exception {
 		ArrayList<Integer> numbers = new ArrayList<Integer>();
 		int numberStartIndex = 0;
 		char currentChar;
 		char[] inputCharArray;
-		int[] returnArray;
+		Integer[] returnArray;
 		enum LastChar {NUMBER, COMMA, SPACE}
 		LastChar lastChar = LastChar.NUMBER;
 		
@@ -105,14 +105,14 @@ public class Feldvariablen {
 		}
 		returnArray = convertArrayListToArray(numbers);
 		System.out.print("Eingabe erfolgreich als ");
-		System.out.print(util.Array.intToString(returnArray));
+		System.out.print(util.Array.toString(returnArray));
 		System.out.print(" geparst.");
 		return returnArray;
 	}
 	
-	private static int[] convertArrayListToArray(ArrayList<Integer> numbers) {
+	private static Integer[] convertArrayListToArray(ArrayList<Integer> numbers) {
 		int numbersAmount = numbers.size();
-		int[] numbersArray = new int[numbersAmount];
+		Integer[] numbersArray = new Integer[numbersAmount];
 		
 		for (int index = 0; index < numbersAmount; index++) {
 			numbersArray[index] = numbers.get(index);
@@ -120,7 +120,7 @@ public class Feldvariablen {
 		return numbersArray;
 	}
 	
-	private static int[] getIndividualColumnWidths(int[] numbers, int numberAmount) {
+	private static int[] getIndividualColumnWidths(Integer[] numbers, int numberAmount) {
 		int columnWidths[] = new int[NUM_COLUMNS];
 		
 		for (int column = 0; column < NUM_COLUMNS; column++) {
@@ -138,7 +138,7 @@ public class Feldvariablen {
 		return columnWidths;
 	}
 	
-	private static int getSpacing(int[] numbers, int numberAmount) {
+	private static int getSpacing(Integer[] numbers, int numberAmount) {
 		int highestNumDigits = 0;
 		
 		for (int index = 0; index < numberAmount; index++) {
@@ -151,7 +151,7 @@ public class Feldvariablen {
 		return highestNumDigits;
 	}
 	
-	private static void displayNumbers(int[] numbers) {
+	private static void displayNumbers(Integer[] numbers) {
 		int numberAmount = numbers.length;
 		int[] columnWidths;
 		int spacing;
@@ -188,10 +188,10 @@ public class Feldvariablen {
 		System.out.print("\n]\n");
 	}
 	
-	private static boolean menu(int[] numbers) {
+	private static boolean menu(Integer[] numbers) {
 		String menuString = "\n========= Menü =========\n 1 - Erneute Eingabe \n "
 				+ "2 - Mathe Operationen \n 0 - ENDE \n";
-		byte menuChoice = util.General.customChoicesMenu(menuString, new int[] {0, 1, 2});
+		byte menuChoice = util.Menu.basic(menuString, new Byte[] {0, 1, 2});
 			
 		switch (menuChoice) {
 		case 0:
@@ -210,13 +210,14 @@ public class Feldvariablen {
 		}
 	}
 	
-	private static boolean mathMenu(int[] numbers) {
-		String mathMenuString = "\n====== Array Menü ======\n 1 - Summe \n"
-				+ " 2 - Produkt \n 3 - Minimum \n 4 - Maximum \n 0 - ZURÜCK \n";
-		byte mathMenuChoice = util.General.instantCustomChoicesMenu(
-				mathMenuString, new int[] {0, 1, 2, 3, 4});
+	private static boolean mathMenu(Integer[] numbers) {
+		String mathMenuString = 
+				"\n====== Array Menü ======\n 1 - Summe \n 2 - Produkt \n"
+			  + " 3 - Minimum \n 4 - Maximum \n 0 - ZURÜCK \n";
 		String mathOutputString = "\n%s Ihrer eingegebenen Zahlen ist %d \n";
 		
+		byte mathMenuChoice = util.Menu.instantBasic(mathMenuString, new Byte[] {0, 1, 2, 3, 4});
+				
 		switch (mathMenuChoice) {
 		case 0:
 			return menu(numbers);
@@ -240,12 +241,11 @@ public class Feldvariablen {
 		return mathMenu(numbers);
 	}
 	
-	public static void start() {
-		int[] numbers;
-		
+	public static void start() {		
 		explainProgram();
+		
 		while (true) {
-			numbers = getNumbers();
+			Integer[] numbers = getNumbers();
 			displayNumbers(numbers);
 			if (!menu(numbers)) {
 				return;

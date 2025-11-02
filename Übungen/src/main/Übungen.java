@@ -9,8 +9,12 @@ public class Übungen {
 		byte menuChoice;
 		
 		while (true) {
-			menuChoice = util.General.instantCustomChoicesMenu(
-					menuString, new int[] {0, 1, 2, 3});
+			menuChoice = util.Menu.builder()
+					.menuString(menuString)
+					.options(new Byte[] {0, 1, 2, 3})
+					.loadingBar(22, 0)
+					.show();
+			
 			switch (menuChoice) {
 			case 1:
 				Tankbelege.start();

@@ -4,11 +4,12 @@ package main;
 public class CarSharing {
 		
 	// settings TODO: settings file (JSON?)
-	static final int[] VEHICLE_CLASSES = {1,2};
-	static final Integer[] KM_THRESHOLDS = {100,250,500,1000,Integer.MAX_VALUE};
+	public static final Integer[] VEHICLE_CLASSES = {1,2};
+	public static final Integer[] KM_THRESHOLDS = {100,250,500,1000,Integer.MAX_VALUE};
 	//COSTS = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]
-	static final Double[][] COSTS = {{0.33,0.31,0.29,0.27,0.25}, {0.38,0.36,0.34,0.32,0.30}};
-	static final Double[] HOUR_COSTS = {3.00,4.00};
+	public static final Double[][] COSTS = {{0.33,0.31,0.29,0.27,0.25}, {0.38,0.36,0.34,0.32,0.30}};
+	public static final Double[] HOUR_COSTS = {3.00,4.00};
+	
 	
 	private static void explainProgram() {
 		System.out.print("\n========== Wilkommen ==========\n");
@@ -17,14 +18,13 @@ public class CarSharing {
 		System.out.print("viel Spaß! \n");
 	}
 	
-	private static int getInput(String preInputMessage) {
-		return util.Input.getIntInRange(preInputMessage,null,null,null,(double)Integer.MAX_VALUE,null,null);
-	}
-	
 	private static int[] getData() {
-		int vehicleClassIndex = util.Input.getMatchingInt("Fahrzeugklasse: ",null,null,VEHICLE_CLASSES) - 1;
-		int drivenKm = getInput("Gefahrene Kilometer: ");
-		int hoursUsed = getInput("Stunden genutzt: ");
+		int vehicleClassIndex = util.Input.getMatchingNumber(
+				util.Numbers.INT, "Fahrzeugklasse: ", 
+				util.Input.DEFAULT_ERROR, true, VEHICLE_CLASSES);
+		vehicleClassIndex--;
+		int drivenKm = util.Input.getNumber(util.Numbers.INT, "Gefahrene Kilometer: ");
+		int hoursUsed = util.Input.getNumber(util.Numbers.INT, "Stunden genutzt: ");
 		
 		return new int[] {vehicleClassIndex,drivenKm,hoursUsed};
 	}
@@ -32,30 +32,30 @@ public class CarSharing {
 	private static double calculateCost(int[] data) {
 		double cost = 0;
 		int vehicleClassIndex = data[0];
-		int drivenKm = data[1];
-		int hoursUsed = data[2];
+		double hoursUsed = (double) data[2];
 		
 		for (int index = 0; index < KM_THRESHOLDS.length; index++) {
+			int drivenKm = data[1];
+			
 			if (drivenKm <= KM_THRESHOLDS[index]) {
 				cost = COSTS[vehicleClassIndex][index] * drivenKm;
 				break;
 			}
 		}
-		cost += HOUR_COSTS[vehicleClassIndex] * (double)hoursUsed;
+		
+		cost += HOUR_COSTS[vehicleClassIndex] * hoursUsed;
+		
 		return cost;
 	}
 	
 	public static void start() {
-		int[] data;
-		double cost;
-		
 		explainProgram();
 		
 		while (true) {	
-			data = getData();
-			cost = calculateCost(data);
+			int[] data = getData();
+			double cost = calculateCost(data);
 			System.out.printf("Rechnungsbetrag: %.2f€ \n", cost);
-			if (util.General.basicMenu()) {
+			if (util.Menu.shouldExit()) {
 				return;
 			}
 		}

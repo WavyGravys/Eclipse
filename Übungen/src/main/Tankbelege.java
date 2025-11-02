@@ -3,8 +3,8 @@ package main;
 
 public class Tankbelege {
 	
-    private static int getInput(String preInputMessage, Double min, Boolean minInclusive) {
-    	return util.Input.getIntInRange(preInputMessage,null,null,min,null,minInclusive,false);
+    private static int getInput(String prompt, double min, boolean minInclusive) {
+    	return util.Input.getNumberInRange(util.Numbers.INT,prompt,min,Integer.MAX_VALUE,minInclusive,false);
     }
     
 	private static void explainProgram() {
@@ -39,7 +39,7 @@ public class Tankbelege {
 			
 			System.out.printf("Ihr durchschnittlicher verbrauch ist %.2f L/100Km \n", literPer100Km);
 			
-			if (util.General.basicMenu()) {
+			if (util.Menu.shouldExit()) {
 				return;
 			}
 			System.out.print("\n - Neuer Tankbeleg - \n");

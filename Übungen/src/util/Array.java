@@ -3,13 +3,41 @@ package util;
 
 public class Array {
 	
+	public static void validate(Number[] array) {
+	    if (array == null || array.length == 0) {
+	    	throw new IllegalArgumentException("Array cannot be null or empty");
+	    }
+	    
+		for (int index = 0; index < array.length; index++) {
+			if (array[index] == null) {
+				throw new IllegalArgumentException(
+						"Array contains null value at index " + index);
+			}
+		}
+	}
+	
+	public static double toDoubleAndValidate(Number number, int index) {
+		double doubleValue = number.doubleValue();
+		
+		if (Double.isNaN(doubleValue)) {
+            throw new ArithmeticException("Array contains NaN at index " + index);
+        }
+		
+        if (Double.isInfinite(doubleValue)) {
+            throw new ArithmeticException("Overflow detected at index " + index + 
+                ": value exceeds double range");
+        }
+        
+        return doubleValue;
+	}
+	
 	/**
 	 * prints the array
 	 * @param array input array <p>
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static void printInt(int[] array) {
+	public static void print(Number[] array) {
 		System.out.print("[");
 		for (int index = 0; index < array.length - 1; index++) {
 			System.out.print(array[index]);
@@ -24,13 +52,14 @@ public class Array {
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static String intToString(int[] array) {
+	public static String toString(Number[] array) {
 		String returnString = "[";
+		
 		for (int index = 0; index < array.length - 1; index++) {
-			System.out.print(array[index]);
-			System.out.print(", ");
+			returnString = String.join(returnString, array[index].toString(), ", ");
 		}
-		System.out.print(array[array.length - 1] + "]");
+		returnString = String.join(returnString, array[array.length - 1].toString() + "]");
+		
 		return returnString;
 	}
 	
@@ -40,12 +69,16 @@ public class Array {
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static int sum(int[] array) {
-		int sum = 0;
+	public static double sum(Number[] array) {
+		double prod = 1;
+		double numAtIndex;
+		
 		for (int index = 0; index < array.length; index++) {
-			sum += array[index];
+			numAtIndex = array[index].doubleValue();
+			
+			prod += numAtIndex;
 		}
-		return sum;
+		return prod;
 	}
 	
 	/**
@@ -54,40 +87,54 @@ public class Array {
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static int prod(int[] array) {
-		int prod = 1;
+	public static double prod(Number[] array) {
+		double prod = 1;
+		double numAtIndex;
+		
 		for (int index = 0; index < array.length; index++) {
-			prod *= array[index];
+			numAtIndex = array[index].doubleValue();
+			
+			prod *= numAtIndex;
 		}
 		return prod;
 	}
 	
 	/**
-	 * returns smallest int of array
+	 * returns smallest number of array
 	 * @param array input array <p>
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static int min(int[] array) {
-		int smallestNumber = Integer.MAX_VALUE;
+	public static double min(Number[] array) {
+		double smallestNumber = Double.POSITIVE_INFINITY;
+		double numAtIndex;
+		
 		for (int index = 0; index < array.length; index++) {
-			if (array[index] < smallestNumber)
-				smallestNumber = array[index];
+			numAtIndex = array[index].doubleValue();
+			
+			if (numAtIndex < smallestNumber) {
+				smallestNumber = numAtIndex;
+			}
 		}
 		return smallestNumber;
 	}
 	
 	/**
-	 * returns highest int of array
+	 * returns highest number of array
 	 * @param array input array <p>
 	 * @Defaults
 	 * <b>array</b> <code>N/A<code> 
 	 */
-	public static int max(int[] array) {
-		int biggestNumber = 0;
+	public static double max(Number[] array) {
+		validate(array);
+		
+		double biggestNumber = Double.NEGATIVE_INFINITY;
+		
 		for (int index = 0; index < array.length; index++) {
-			if (array[index] > biggestNumber) {
-				biggestNumber = array[index];
+			double numAtIndex = toDoubleAndValidate(array[index], index);
+			
+			if (numAtIndex > biggestNumber) {
+				biggestNumber = numAtIndex;
 			}
 		}
 		return biggestNumber;
