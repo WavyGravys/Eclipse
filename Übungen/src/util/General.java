@@ -23,21 +23,22 @@ public class General {
 	 * <b>loadingBarDotAmount</b> <code>22<code> <br>
 	 * <b>loadingBarSpeed</b> <code>1<code>
 	 */
-	public static byte menu(String menuString, String preInputMessage, String retryMessage, Boolean shouldFormat, 
-			int[] acceptedMenuOptions, Boolean shouldDisplayLoadingBar, Integer loadingBarDotAmount, Integer loadingBarSpeed) {
-		
+	public static byte menu(String menuString, String preInputMessage, 
+			String retryMessage, Boolean shouldFormat, 
+			int[] acceptedMenuOptions, Boolean shouldDisplayLoadingBar, 
+			Integer loadingBarDotAmount, Integer loadingBarSpeed) {
 		menuString = menuString == null ? "\n========= Menü =========\n 1 - Erneute Eingabe \n 0 - Programm Schließen \n" : menuString;
 		preInputMessage = preInputMessage == null ? "Auswahl: " : preInputMessage;
 		acceptedMenuOptions = acceptedMenuOptions == null ? new int[] {0,1} : acceptedMenuOptions;
 		shouldDisplayLoadingBar = shouldDisplayLoadingBar == null ? true : shouldDisplayLoadingBar;
 		
-		if (shouldDisplayLoadingBar)
+		if (shouldDisplayLoadingBar) {
 			loadingBar(loadingBarDotAmount, loadingBarSpeed);
+		}
 		
 		System.out.print(menuString);
 		return (byte)Input.getMatchingInt(preInputMessage, retryMessage, shouldFormat, acceptedMenuOptions);
 	}
-	
 	
 	/**
 	 * prints a small loading bar.
@@ -52,7 +53,7 @@ public class General {
 		int timeToSleep = speed == null ? 17 : 17/speed;
 		
 		System.out.print("\n[");
-		for (byte i=0;i<dotAmount;i++) {
+		for (byte i = 0; i < dotAmount; i++) {
 			try { Thread.sleep(timeToSleep);
 			} catch (Exception e) {}
 			System.out.print(".");
@@ -60,14 +61,12 @@ public class General {
 		System.out.print("]");
 	}
 	
-	
 	/**
 	 * returns true if the user chooses "Programm Schließen" in a small menu
 	 */
 	public static boolean basicMenu() {
 		return menu(null,null,null,null,null,null,null,null) == 0;
 	}
-	
 	
 	/**
 	 * returns choice that the user enters into a small menu, with a loading bar
@@ -80,7 +79,6 @@ public class General {
 	public static byte customChoicesMenu(String menuString, int[] acceptedMenuOptions) {
 		return menu(menuString,null,null,null,acceptedMenuOptions,null,null,null);
 	}
-	
 	
 	/**
 	 * returns choice that the user enters into a small menu, without a loading bar
