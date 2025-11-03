@@ -18,6 +18,11 @@ public class Menu {
         private int loadingBarDotAmount = 22;
         private int loadingBarSpeed = 1;
         
+        public MenuBuilder type(util.Numbers type) {
+        	this.type = type;
+        	return this;
+        }
+        
         public MenuBuilder menuString(String menuString) {
             this.menuString = menuString;
             return this;
@@ -45,13 +50,18 @@ public class Menu {
             return this;
         }
         
-        public byte show() {
+        public <T extends Number> T show() {
             if (displayLoadingBar) {
                 Menu.loadingBar(loadingBarDotAmount, loadingBarSpeed);
             }
             
             System.out.print(menuString);
-            return Input.getMatchingNumber(type, prompt, error, shouldFormat, options);
+            return util.Input.builder()
+            		.prompt(prompt)
+            		.error(error)
+            		.numbersToMatch(options)
+            		.shouldFormat(shouldFormat)
+            		.getNumber(type);
         }
     }
     
@@ -98,14 +108,14 @@ public class Menu {
     	return choice == 0;
     }
     
-    public static byte basic(String menuString, Byte[] options) {
+    public static <T extends Number> T basic(String menuString, Byte[] options) {
     	return builder()
     			.menuString(menuString)
     			.options(options)
     			.show();
     }
     
-    public static byte instantBasic(String menuString, Byte[] options) {
+    public static <T extends Number> T instantBasic(String menuString, Byte[] options) {
     	return builder()
     			.menuString(menuString)
     			.options(options)

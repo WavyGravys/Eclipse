@@ -14,228 +14,209 @@ public class Input {
 		private String error = 
 				"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n";
 		private boolean shouldFormat = false;
+		private Number min = 0;
+		private Number max = Integer.MAX_VALUE;
 		private boolean minInclusive = true;
 		private boolean maxInclusive = true;
-		private double min = 0;
-		private double max = Integer.MAX_VALUE;
+		private Number[] numbersToMatch = new Number[] {0, 1};
+		private util.Function <String, Boolean> validateFunc = null;
 		
-		public InpuBuilder prompt(String prompt) {
+		public InputBuilder validateFunc(
+				util.Function <String, Boolean> validateFunc) {
+			this.validateFunc = validateFunc;
+			return this;
+		}
+		
+		public InputBuilder prompt(String prompt) {
 			this.prompt = prompt;
 			return this;
 		}
 		
-	}
-	
-	public static final String DEFAULT_PROMPT = "Eingabe: ";
-	public static final String DEFAULT_ERROR = 
-			"ERROR: \"%s\" ist keine valide Eingabe. Versuchen Sie es bitte erneut. \n";
-	public static final boolean DEFAULT_SHOULD_FORMAT = false;
-	public static final boolean DEFAULT_MIN_INCLUSIVE = true;
-	public static final boolean DEFAULT_MAX_INCLUSIVE = true;
-	public static final double DEFAULT_MIN = 0;
-	public static final double DEFAULT_MAX = Integer.MAX_VALUE;
-	
-	private static Scanner scan = new Scanner(System.in); // static used for readability and ease of use
-	
-	
-    /**
-     * Returns a validated string from user input.
-     * Repeatedly prompts until the input passes validation.
-     * @param prompt message displayed before each input attempt (default: "Eingabe: ")
-     * @param error message for invalid input, use %s for the input value
-     * @param checkInputFunc validation predicate that returns true if input is valid
-     * @return the first valid input string
-     */
-	public static String getString(String prompt, String error, 
-			util.Function<String, Boolean> validateInput) {
-		
-		while (true) {
-    		System.out.print(prompt);
-    		
-    		if (!scan.hasNextLine()) { // XXX: handle CTRL+Z 
-    			System.out.println(" ");
-    		}
-    		
-    		String input = scan.nextLine();
-    		
-    		if (isValidInput(input, validateInput)) {
-    			return input;
-    		}
-    		
-    		System.out.printf(error, input);
-		}
-	}
-	
-	private static boolean isValidInput(String input, 
-			util.Function<String, Boolean> validateInput) {
-		if (input == null || input.isEmpty()) {
-			return false;
+		public InputBuilder error(String error) {
+			this.error = error;
+			return this;
 		}
 		
-		try {
-			return validateInput.apply(input);
-		} catch (Exception e) {
-			return false;
+		public InputBuilder shouldFormat(boolean shouldFormat) {
+			this.shouldFormat = shouldFormat;
+			return this;
 		}
-	}
-	
-	// overload: only validation function
-	public static String getString(util.Function<String, Boolean> 
-								   validateInput) {
-		return getString(DEFAULT_PROMPT, DEFAULT_ERROR, validateInput);
-	}
-	
-	
-    /**
-     * Returns an entered number once a valid non-empty input is provided.
-     * @param prompt
-     * @param error
-     * @return the validated non-empty String
-     */
-	public static String getNonEmptyString(String prompt, String error) {
-		util.Function<String, Boolean> validateInput = input -> {
-			return !input.equals("");
-		};
 		
-		return getString(prompt, error, validateInput);
-	}
-
-	// overload: default
-	public static String getNonEmptyString() {
-	    return getNonEmptyString(DEFAULT_PROMPT, DEFAULT_ERROR);
-	}
-	
-	
-    /**
-     * Returns an entered number once valid input within the given range is provided.
-     * @param type the type of number to parse (Integer, Double, etc.)
-     * @param prompt message before each input attempt
-     * @param error message after invalid input
-     * @param shouldFormat whether to strip non-numeric characters before parsing
-     * @param min minimum value (default: 0)
-     * @param max maximum value (default: Integer.MAX_VALUE)
-     * @param minInclusive whether min is inclusive (default: true)
-     * @param maxInclusive whether max is inclusive (default: true)
-     * @return the validated number
-     */
-	public static <T extends Number> T getNumberInRange(
-			util.Numbers type, String prompt, String error, 
-			Boolean shouldFormat, Double min, Double max, 
-			Boolean minInclusive, Boolean maxInclusive) {
+		public InputBuilder	range(Number min, Number max) {
+			this.min = min;
+			this.max = max;
+			this.validateFunc = validateInRange;
+			return this;
+		}
 		
-		util.Function<String, Boolean> validateInput = input -> {
-			input = shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
-			Number number = util.Numbers.parseAs(input, type);
+		public InputBuilder inclusivity(boolean minInclusive, boolean maxInclusive) {
+			this.minInclusive = minInclusive;
+			this.maxInclusive = maxInclusive;
+			this.validateFunc = validateInRange;
+			return this;
+		}
+		
+		public InputBuilder numbersToMatch(Number[] numbersToMatch) {
+			this.numbersToMatch = numbersToMatch;
+			this.validateFunc = validateMatching;
+			return this;
+		}
+		
+		
+		private static class Result {
+		    private String input;
+		    
+		    public static Result ofInput(String value) {
+		        Result r = new Result();
+		        r.input = value;
+		        return r;
+		    }
+		    
+		    public String asString() { return input; }
+		    public <T extends Number> T asNumber(util.Numbers type) { 
+		    	return util.Numbers.parseAs(input, type); 
+	    	}
+		}
+		
+		private Result getInput() {
+			Scanner scan = new Scanner(System.in);
+			while (true) {
+	    		System.out.print(prompt);
+	    		
+	    		while (!scan.hasNext()) {}
+	    		
+	    		/*
+	    		if (!scan.hasNextLine()) { // XXX: handle CTRL+Z 
+	      			System.out.println(" ");
+	    			scan.close();
+	    			scan = new Scanner(System.in); 
+	    		}
+	    		*/
+	    		
+	    		String input = scan.nextLine();
+	    		String formattedInput = shouldFormat ? input.replaceAll("[^0-9.-]", "") : input;
+	    		
+	    		if (isValidInput(formattedInput, validateFunc)) {
+	    			scan.close();
+    				return Result.ofInput(formattedInput);
+	    			
+	    		}
+	    		System.out.printf(error, formattedInput);
+			}
+		}
+		
+		public String getString() {
+			return this.getInput().asString();
+		}
+		
+		public <T extends Number> T getNumber(util.Numbers type) {
+			if (this.validateFunc == null) {
+				this.validateFunc = validateNumber;
+			}
+			if (type == null) {
+				type = util.Numbers.INT;
+			}
+			
+			return this.getInput().asNumber(type);
+		}
+		
+		private static  boolean isValidInput(String input, 
+				util.Function<String, Boolean> validateInput) {
+			if (input == null || input.isEmpty()) {
+				return false;
+			}
+			
+			try {
+				return validateInput.apply(input);
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		
+		
+		public InputBuilder withRangeValidation() {
+		    return this.validateFunc(validateInRange);
+		}
+		
+		public util.Function<String, Boolean> validateInRange = input -> {
+			Number number = util.Numbers.parse(input);
 			return util.Math.isInRange(number, min, max, minInclusive, maxInclusive);
 		};
 		
-		String input = getString(prompt, error, validateInput);
-		return util.Numbers.parseAs(input, type);
-	}
-	
-    // overload: type and range (inclusive)
-    public static <T extends Number> T getNumberInRange(
-    		util.Numbers type, double min, double max) {
-       
-    	return getNumberInRange(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
-            DEFAULT_SHOULD_FORMAT, min, max, 
-            DEFAULT_MIN_INCLUSIVE, DEFAULT_MAX_INCLUSIVE);
-    }
-    
-    // overload: with inclusivity flags
-    public static <T extends Number> T getNumberInRange(
-    		util.Numbers type, double min, double max, 
-    		boolean minInclusive, boolean maxInclusive) {
-        
-    	return getNumberInRange(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
-            DEFAULT_SHOULD_FORMAT, min, max, minInclusive, maxInclusive);
-    }
-	
-    // overload: with prompt
-    public static <T extends Number> T getNumberInRange(
-    		util.Numbers type, String prompt, double min, double max, 
-    		boolean minInclusive, boolean maxInclusive) {
-        
-    	return getNumberInRange(type, prompt, DEFAULT_ERROR, 
-            DEFAULT_SHOULD_FORMAT, min, max, minInclusive, maxInclusive);
-    }
-    
-	
-	/**
-	 * Returns an entered number once valid input 
-	 * matching one of numbersToMatch is provided.
-	 * @param prompt printed before each input attempt
-	 * @param error printed after each failed input attempt
-	 * @param shouldFormat if the inpout should be formatted before parse
-	 * @param numbersToMatch array of ints, of which one needs to math the input
-	 * @returns the validated number
-	 */
-	public static <T extends Number> T getMatchingNumber(
-			util.Numbers type, String prompt, String error, 
-			Boolean shouldFormat, Number[] numbersToMatch) {
 		
-		util.Function<String, Boolean> validateInput = input -> {
-			input = shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
+		public InputBuilder withNumberValidation() {
+		    return this.validateFunc(validateNumber);
+		}
+		
+		public util.Function<String, Boolean> validateNumber = input -> {
+			util.Numbers.parse(input); // check if parsable
+			return true;
+		};
+		
+		
+		public InputBuilder withMatchingValidation() {
+		    return this.validateFunc(validateMatching);
+		}
+		
+		public util.Function<String, Boolean> validateMatching = input -> {
 			Number inputNumber = util.Numbers.parse(input);
 			
-			for (int index = 0; index < numbersToMatch.length; index++) {
-				if (inputNumber == numbersToMatch[index]) {
+			for (Number numberToMatch : numbersToMatch) {
+				if (inputNumber.getClass() == numberToMatch.getClass()) {
+					if (inputNumber.equals(numberToMatch)) {
+						return true;
+					}
+				} else if (inputNumber.doubleValue() == numberToMatch.doubleValue()) {
 					return true;
 				}
 			}
 			
 			return false;
 		};
-		
-		String input = getString(prompt, error, validateInput);
-		return util.Numbers.parseAs(input, type);
 	}
 	
-	// overload: only numbersToMatch
-	public static <T extends Number> T getMatchingNumber(util.Numbers type, Number[] numbersToMatch) {
-		return getMatchingNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
-							  DEFAULT_SHOULD_FORMAT, numbersToMatch);
+	// Convenience methods:
+	
+	public static String getString(String prompt) {
+		return builder()
+				.prompt(prompt)
+				.getString();
 	}
 	
-	// overload: numbersToMatch and shouldFormat
-	public static <T extends Number> T getMatchingNumber(util.Numbers type, Number[] numbersToMatch, boolean shouldFormat) {
-		return getMatchingNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, 
-				shouldFormat, numbersToMatch);
-	}
-	
-	
-	/**
-	 * Returns an entered Number once valid input 
-	 * of util.Numbers type is provided.
-	 * @param prompt
-	 * @param error
-	 * @param shouldFormat
-	 * @return returns valid number of given type 
-	 */
-	public static <T extends Number> T getNumber(util.Numbers type, String prompt, String error, Boolean shouldFormat) {
-		
-		util.Function<String, Boolean> validateInput = input -> {
-				input = shouldFormat ? input.replaceAll("[^0-9-]", "") : input;
-				Byte.parseByte(input);
-				return true;
-		};
-		
-		String input = getString(prompt, error, validateInput);
-		return util.Numbers.parseAs(input, type);
-	}
-	
-	// overload: only type
-	public static <T extends Number> T getNumber(util.Numbers type) {
-		return getNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, DEFAULT_SHOULD_FORMAT);
-	}
-	
-	// overload: type and prompt
 	public static <T extends Number> T getNumber(util.Numbers type, String prompt) {
-		return getNumber(type, prompt, DEFAULT_ERROR, DEFAULT_SHOULD_FORMAT);
+		return builder()
+				.prompt(prompt)
+				.getNumber(type);
 	}
 	
-	// overload: type and shouldFormat
-	public static <T extends Number> T getNumber(util.Numbers type, boolean shouldFormat) {
-		return getNumber(type, DEFAULT_PROMPT, DEFAULT_ERROR, shouldFormat);
+	public static <T extends Number> T getNumberInRange(
+			util.Numbers type, String prompt,
+			boolean shouldFormat, double min, double max, 
+			boolean minInclusive, boolean maxInclusive) {
+		
+	    return builder()
+	    		.prompt(prompt)
+	    		.shouldFormat(shouldFormat)
+	    		.range(min, max)
+	    		.inclusivity(minInclusive, maxInclusive)
+	    		.getNumber(type);
+	}
+	
+	public static <T extends Number> T getNumberInRange(
+			util.Numbers type, String prompt, double min, double max) {
+		
+	    return builder()
+	    		.prompt(prompt)
+	    		.range(min, max)
+	    		.getNumber(type);
+	}
+	
+	public static <T extends Number> T getMatchingNumber(
+			util.Numbers type, String prompt, Number[] numbersToMatch) {
+		
+		return builder()
+				.prompt(prompt)
+				.numbersToMatch(numbersToMatch)
+				.getNumber(type);
 	}
 }

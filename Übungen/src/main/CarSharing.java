@@ -19,9 +19,12 @@ public class CarSharing {
 	}
 	
 	private static int[] getData() {
-		int vehicleClassIndex = util.Input.getMatchingNumber(
-				util.Numbers.INT, "Fahrzeugklasse: ", 
-				util.Input.DEFAULT_ERROR, true, VEHICLE_CLASSES);
+		int vehicleClassIndex = util.Input.builder()
+				.prompt("Fahrzeugklasse: ")
+				.shouldFormat(true)
+				.numbersToMatch(VEHICLE_CLASSES)
+				.getNumber(util.Numbers.INT);
+		
 		vehicleClassIndex--;
 		int drivenKm = util.Input.getNumber(util.Numbers.INT, "Gefahrene Kilometer: ");
 		int hoursUsed = util.Input.getNumber(util.Numbers.INT, "Stunden genutzt: ");

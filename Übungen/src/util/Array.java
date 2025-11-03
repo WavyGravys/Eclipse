@@ -56,9 +56,9 @@ public class Array {
 		String returnString = "[";
 		
 		for (int index = 0; index < array.length - 1; index++) {
-			returnString = String.join(returnString, array[index].toString(), ", ");
+			returnString = returnString.concat(array[index].toString() + ", ");
 		}
-		returnString = String.join(returnString, array[array.length - 1].toString() + "]");
+		returnString = returnString.concat(array[array.length - 1].toString() + "]");
 		
 		return returnString;
 	}

@@ -4,7 +4,11 @@ package main;
 public class Tankbelege {
 	
     private static int getInput(String prompt, double min, boolean minInclusive) {
-    	return util.Input.getNumberInRange(util.Numbers.INT,prompt,min,Integer.MAX_VALUE,minInclusive,false);
+    	return util.Input.builder()
+    			.prompt(prompt)
+    			.range(min, Integer.MAX_VALUE)
+    			.inclusivity(minInclusive, false)
+    			.getNumber(util.Numbers.INT);
     }
     
 	private static void explainProgram() {

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Feldvariablen {
 	
-	static final Scanner scan = new Scanner(System.in);
+	static Scanner scan = new Scanner(System.in);
 	
 	// settings TODO: settings file (JSON?)
 	static final byte NUM_COLUMNS = 5;
@@ -40,6 +40,8 @@ public class Feldvariablen {
     		System.out.print("Eingabe: ");
     		if (!scan.hasNextLine()) { // to handle the user pressing "ctrl+z", while scan is waiting for input. (FIXME: doesnt work at the start)
     			System.out.println(" ");
+    			scan.close();
+    			scan = new Scanner(System.in); 
     		}
     		input = scan.nextLine();
 			
@@ -106,7 +108,7 @@ public class Feldvariablen {
 		returnArray = convertArrayListToArray(numbers);
 		System.out.print("Eingabe erfolgreich als ");
 		System.out.print(util.Array.toString(returnArray));
-		System.out.print(" geparst.");
+		System.out.print(" geparst. \n");
 		return returnArray;
 	}
 	
@@ -190,7 +192,7 @@ public class Feldvariablen {
 	
 	private static boolean menu(Integer[] numbers) {
 		String menuString = "\n========= Menü =========\n 1 - Erneute Eingabe \n "
-				+ "2 - Mathe Operationen \n 0 - ENDE \n";
+				+ "2 - Mathe Operationen \n 0 - Programm Schließen \n";
 		byte menuChoice = util.Menu.basic(menuString, new Byte[] {0, 1, 2});
 			
 		switch (menuChoice) {
@@ -214,7 +216,7 @@ public class Feldvariablen {
 		String mathMenuString = 
 				"\n====== Array Menü ======\n 1 - Summe \n 2 - Produkt \n"
 			  + " 3 - Minimum \n 4 - Maximum \n 0 - ZURÜCK \n";
-		String mathOutputString = "\n%s Ihrer eingegebenen Zahlen ist %d \n";
+		String mathOutputString = "\n%s Ihrer eingegebenen Zahlen ist %f \n";
 		
 		byte mathMenuChoice = util.Menu.instantBasic(mathMenuString, new Byte[] {0, 1, 2, 3, 4});
 				
