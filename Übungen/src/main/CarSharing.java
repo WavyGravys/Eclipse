@@ -1,30 +1,38 @@
 package main;
 
 
-public class CarSharing {
+public class CarSharing implements Übung {
 		
 	// settings TODO: settings file (JSON?)
-	public static final Integer[] VEHICLE_CLASSES = {1,2};
-	public static final Integer[] KM_THRESHOLDS = {100,250,500,1000,Integer.MAX_VALUE};
+	private static final Integer[] VEHICLE_CLASSES = {1,2};
+	private static final Integer[] KM_THRESHOLDS = {100,250,500,1000,Integer.MAX_VALUE};
 	//COSTS = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]
-	public static final Double[][] COSTS = {{0.33,0.31,0.29,0.27,0.25}, {0.38,0.36,0.34,0.32,0.30}};
-	public static final Double[] HOUR_COSTS = {3.00,4.00};
+	private static final Double[][] COSTS = {{0.33,0.31,0.29,0.27,0.25}, {0.38,0.36,0.34,0.32,0.30}};
+	private static final Double[] HOUR_COSTS = {3.00,4.00};
+	private static final String[] explainLines = new String[] {
+			"In folgendem Programm geben Sie Ihre Car Sharing daten ein,",
+			"womit Ihre Kosten für den Nutzen des Autos errechnet werden.",
+			};
 	
 	
-	private static void explainProgram() {
-		System.out.print("\n========== Wilkommen ==========\n");
-		System.out.print("In folgendem Programm geben Sie Ihre Car Sharing daten ein, \n");
-		System.out.print("womit Ihre Kosten für den Nutzen des Autos errechnet werden. \n");
-		System.out.print("viel Spaß! \n");
+	public void start() {
+		util.General.explainProgram(explainLines);
+		
+		while (true) {	
+			int[] data = getData();
+			
+			double cost = calculateCost(data);
+			
+			System.out.printf("Rechnungsbetrag: %.2f€ \n\n", cost);
+			
+			if (util.Menu.shouldExit()) {
+				return;
+			}
+		}
 	}
 	
 	private static int[] getData() {
-		int vehicleClassIndex = util.Input.builder()
-				.prompt("Fahrzeugklasse: ")
-				.shouldFormat(true)
-				.numbersToMatch(VEHICLE_CLASSES)
-				.getNumber(util.Numbers.INT);
-		
+		int vehicleClassIndex = util.Input.getMatchingNumber(util.Numbers.INT, "Fahrzeugsklasee: ", VEHICLE_CLASSES);
 		vehicleClassIndex--;
 		int drivenKm = util.Input.getNumber(util.Numbers.INT, "Gefahrene Kilometer: ");
 		int hoursUsed = util.Input.getNumber(util.Numbers.INT, "Stunden genutzt: ");
@@ -49,18 +57,5 @@ public class CarSharing {
 		cost += HOUR_COSTS[vehicleClassIndex] * hoursUsed;
 		
 		return cost;
-	}
-	
-	public static void start() {
-		explainProgram();
-		
-		while (true) {	
-			int[] data = getData();
-			double cost = calculateCost(data);
-			System.out.printf("Rechnungsbetrag: %.2f€ \n", cost);
-			if (util.Menu.shouldExit()) {
-				return;
-			}
-		}
 	}
 }

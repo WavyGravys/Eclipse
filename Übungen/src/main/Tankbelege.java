@@ -1,52 +1,64 @@
 package main;
 
 
-public class Tankbelege {
+public class Tankbelege implements Übung { // TODO: runnin mean with visualization
 	
-    private static int getInput(String prompt, double min, boolean minInclusive) {
-    	return util.Input.builder()
-    			.prompt(prompt)
-    			.range(min, Integer.MAX_VALUE)
-    			.inclusivity(minInclusive, false)
-    			.getNumber(util.Numbers.INT);
-    }
-    
-	private static void explainProgram() {
-		System.out.print("\n========== Wilkommen ==========\n");
-		System.out.print("In folgendem Programm geben Sie Ihre Tankbelege ein, \n");
-		System.out.print("mit welchen anschließnd Ihr Durschnittsverbrauch errechnet wird. \n");
-		System.out.print("viel Spaß! \n\n");
-	}
+	public static final String[] explainStrings = new String[] {
+			"In folgendem Programm geben Sie Ihre Tankbelege ein,",
+			"mit welchen anschließend Ihr Durschnittsverbrauch errechnet wird.",
+			};
+	private static int totalRefuelAmount = 0;
+	private static int totalDistanceDriven = 0;
+	private static int lastMileage;
 	
-    public static void start() {
-    	int startingMileage;
-		int lastMileage;
-    	int totalDistanceDriven = 0;
-    	int totalRefuelAmount = 0;
-    	
-    	explainProgram();
-    	startingMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
-    	lastMileage = startingMileage;
-    	
-    	System.out.print("\n - Erster Tankbeleg - \n");
-    	while (true) {
-    		int newRefuelAmount = getInput("getankte Menge in Litern: ", 0d, false);
-    		int newMileage = getInput("Aktueller Kilometerstand: ", (double)lastMileage, false);
-    		float distanceDiv100;
-    		float literPer100Km;
-    		
-    		totalRefuelAmount += newRefuelAmount;
-			totalDistanceDriven += newMileage - lastMileage;
-			lastMileage = newMileage;
-			distanceDiv100 = totalDistanceDriven/100 == 0 ? 0.01f : totalDistanceDriven/100;
-			literPer100Km = totalRefuelAmount / distanceDiv100;
+	
+	public void start() {
+		util.General.explainProgram(explainStrings);
+		
+		int startingMileage = getInput("Aktueller Kilometerstand: ", 0d, true);;
+		lastMileage = startingMileage;
+
+		
+		System.out.print("\n - Erster Tankbeleg - \n");
+		
+		while (true) {
+			int refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
+			int currentMileage = getInput("Aktueller Kilometerstand: ", (double) 
+										  lastMileage, false);
 			
-			System.out.printf("Ihr durchschnittlicher verbrauch ist %.2f L/100Km \n", literPer100Km);
+			updateVars(refuelAmount, currentMileage);
+			
+			getAndPrintAvgConsumption();
 			
 			if (util.Menu.shouldExit()) {
 				return;
 			}
+			
 			System.out.print("\n - Neuer Tankbeleg - \n");
-    	}
+		}
 	}
+	
+    private static int getInput(String prompt, double min, boolean minInclusive) {
+    	return util.Input.builder()
+    			.numType(util.Numbers.INT)
+    			.prompt(prompt)
+    			.range(min, Integer.MAX_VALUE)
+    			.inclusivity(minInclusive, false)
+    			.getNumber();
+    }
+    
+    private static void updateVars(int refuelAmount, int currentMileage) {
+		totalRefuelAmount += refuelAmount;
+		totalDistanceDriven += currentMileage - lastMileage;
+		lastMileage = currentMileage;
+    }
+    
+    private static void getAndPrintAvgConsumption() {
+        float distanceIn100Km = totalDistanceDriven / 100f;
+        if (distanceIn100Km == 0) {
+        	distanceIn100Km = 0.01f;
+        }
+        
+        System.out.println(totalRefuelAmount / distanceIn100Km);
+    }
 }

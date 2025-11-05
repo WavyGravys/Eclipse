@@ -3,38 +3,46 @@ package main;
 
 public class Übungen {
 	
+	private static final Übung[] OPTIONS = {
+		    new Tankbelege(),
+		    new CarSharing(),
+		    new Feldvariablen(),
+		    
+		    /* Add new Übungen here. 
+		     * It's Class must implent Übung and
+		     * it's main function has to be
+		     * public static void start()
+		     */
+		};
+	
+	
 	public static void main(String[] args) {
-		String menuString = "\n===== Übungs Menü =====\n 1 - Tankbelege \n"
-						  + " 2 - CarSharing \n 3 - Feldvariablen \n 0 - ENDE \n";
-		byte menuChoice;
+		String menuString = createMenuString();
+		Integer[] menuOptions = util.Array.integerRange(OPTIONS.length + 1);
+		
+		util.General.sleep(200); // to reduce the lag on startup
 		
 		while (true) {
-			menuChoice = util.Menu.builder()
-					.menuString(menuString)
-					.options(new Byte[] {0, 1, 2, 3})
-					.loadingBar(22, 0)
-					.show();
+			int menuChoice = util.Menu.basic(menuString, menuOptions);
 			
-			switch (menuChoice) {
-			case 1:
-				Tankbelege.start();
-				break;
+			if (menuChoice == 0) {util.General.closeProgram();}
 				
-			case 2:
-				CarSharing.start();
-				break;
-				
-			case 3:
-				Feldvariablen.start();
-				break;
-				
-			case 0:
-				System.out.println("Programm wurde geschlossen.");
-				return;
-				
-			default:
-				break;
-			}
+			System.out.print("\n========== Wilkommen ========== (drücken Sie Enter um zu Skippen)\n");
+			OPTIONS[menuChoice - 1].start();
+			
+			System.out.println();
 		}
+	}
+	
+	private static String createMenuString() {
+		String menuString = "\n====== Übungsmenü ======\n";
+		
+		for (int index = 0; index < OPTIONS.length; index++) {
+			String className = OPTIONS[index].getClass().getSimpleName();
+			String option = " " + (index + 1) + " - " + className + "\n";
+			menuString = menuString + option;
+		}
+		
+		return menuString.concat(" 0 - Programm Schließen \n");
 	}
 }

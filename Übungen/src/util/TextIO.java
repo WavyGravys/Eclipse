@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 
-public class TextIO {
+public class TextIO { //TODO: maybe without imports?
 	
 	public static void writeMatrix() {
 		try {

@@ -3,140 +3,121 @@ package util;
 
 public class Array {
 	
-	public static void validate(Number[] array) {
-	    if (array == null || array.length == 0) {
-	    	throw new IllegalArgumentException("Array cannot be null or empty");
-	    }
-	    
-		for (int index = 0; index < array.length; index++) {
-			if (array[index] == null) {
-				throw new IllegalArgumentException(
-						"Array contains null value at index " + index);
-			}
+	public static void validateIntArray(int[] array) {
+		if (array.length == 0) {
+			throw new IllegalArgumentException("array cannot be empty");
 		}
 	}
 	
-	public static double toDoubleAndValidate(Number number, int index) {
-		double doubleValue = number.doubleValue();
+	public static void print(int[] array) throws IllegalArgumentException {
+		if (array.length == 0) {return;}
 		
-		if (Double.isNaN(doubleValue)) {
-            throw new ArithmeticException("Array contains NaN at index " + index);
-        }
-		
-        if (Double.isInfinite(doubleValue)) {
-            throw new ArithmeticException("Overflow detected at index " + index + 
-                ": value exceeds double range");
-        }
-        
-        return doubleValue;
-	}
-	
-	/**
-	 * prints the array
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static void print(Number[] array) {
 		System.out.print("[");
+		
 		for (int index = 0; index < array.length - 1; index++) {
 			System.out.print(array[index]);
 			System.out.print(", ");
 		}
+		
 		System.out.print(array[array.length - 1] + "]");
 	}
 	
-	/**
-	 * returns the array as a String
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static String toString(Number[] array) {
+	public static String intToString(int[] array) throws IllegalArgumentException  {
+		if (array.length == 0) {return ""; }
+		
 		String returnString = "[";
 		
 		for (int index = 0; index < array.length - 1; index++) {
-			returnString = returnString.concat(array[index].toString() + ", ");
+			returnString = returnString + array[index] + ", ";
 		}
-		returnString = returnString.concat(array[array.length - 1].toString() + "]");
+		returnString = returnString + array[array.length - 1] + "]";
 		
 		return returnString;
 	}
 	
-	/**
-	 * returns sum of array
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static double sum(Number[] array) {
-		double prod = 1;
-		double numAtIndex;
+	public static String numberToString(Number[] array) throws IllegalArgumentException  {
+		if (array.length == 0) {return ""; }
 		
-		for (int index = 0; index < array.length; index++) {
-			numAtIndex = array[index].doubleValue();
-			
-			prod += numAtIndex;
+		String returnString = "[";
+		
+		for (int index = 0; index < array.length - 1; index++) {
+			returnString = returnString + array[index] + ", ";
 		}
-		return prod;
+		returnString = returnString + array[array.length - 1] + "]";
+		
+		return returnString;
 	}
 	
-	/**
-	 * returns product of array
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static double prod(Number[] array) {
-		double prod = 1;
-		double numAtIndex;
+	public static long sumInt(int[] array) throws IllegalArgumentException  {
+		validateIntArray(array);
 		
-		for (int index = 0; index < array.length; index++) {
-			numAtIndex = array[index].doubleValue();
-			
-			prod *= numAtIndex;
-		}
-		return prod;
+		long sum = 0;
+	    
+		for (int number : array) {
+	        sum += number;
+	    }
+	    return sum;
 	}
 	
-	/**
-	 * returns smallest number of array
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static double min(Number[] array) {
-		double smallestNumber = Double.POSITIVE_INFINITY;
-		double numAtIndex;
+	public static long prodInt(int[] array) throws IllegalArgumentException  {
+		validateIntArray(array);
 		
-		for (int index = 0; index < array.length; index++) {
-			numAtIndex = array[index].doubleValue();
-			
-			if (numAtIndex < smallestNumber) {
-				smallestNumber = numAtIndex;
+		long prod = 1;
+		
+	    for (int number : array) {
+	    	prod *= number;
+	    }
+	    
+	    return prod;
+	}
+	
+	public static int minInt(int[] array) throws IllegalArgumentException  {
+		validateIntArray(array);
+		
+		int smallestNumber = Integer.MAX_VALUE;
+		
+		for (int number : array) {
+			if (number < smallestNumber) {
+				smallestNumber = number;
 			}
 		}
+		
 		return smallestNumber;
 	}
 	
-	/**
-	 * returns highest number of array
-	 * @param array input array <p>
-	 * @Defaults
-	 * <b>array</b> <code>N/A<code> 
-	 */
-	public static double max(Number[] array) {
-		validate(array);
+	public static int maxInt(int[] array) throws IllegalArgumentException {
+		validateIntArray(array);
 		
-		double biggestNumber = Double.NEGATIVE_INFINITY;
+		int biggestNumber = Integer.MIN_VALUE;
 		
 		for (int index = 0; index < array.length; index++) {
-			double numAtIndex = toDoubleAndValidate(array[index], index);
+			int numAtIndex = array[index];
 			
 			if (numAtIndex > biggestNumber) {
 				biggestNumber = numAtIndex;
 			}
 		}
+		
 		return biggestNumber;
+	}
+	
+	public static int[] intRange(int n) {
+		int[] array = new int[n];
+		
+		for (int index = 0; index < n; index++) {
+			array[index] = index;
+		}
+		
+		return array;
+	}
+	
+	public static Integer[] integerRange(int n) {
+		Integer[] array = new Integer[n];
+		
+		for (Integer index = 0; index < n; index++) {
+			array[index] = index;
+		}
+		
+		return array;
 	}
 }
