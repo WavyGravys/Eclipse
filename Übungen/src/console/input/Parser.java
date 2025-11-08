@@ -1,0 +1,29 @@
+package console.input;
+
+import util.Types;
+
+public class Parser {
+	
+	public static Object[] parse(String input, Types type) {
+        String[] parts = getCleanParts(input);
+        Object[] parsed = new Object[parts.length];
+        
+        for (int i = 0; i < parts.length; i++) {
+            parsed[i] = type.parse(parts[i]);
+        }
+        
+        return parsed;
+    }
+
+    private static String[] getCleanParts(String input) {
+        String[] parts = input.trim().split("[,\\s]+");
+        
+        if (parts[0].isEmpty() && parts.length > 0) {
+            String[] newParts = new String[parts.length - 1];
+            System.arraycopy(parts, 1, newParts, 0, parts.length - 1);
+            
+            return newParts;
+        }
+        return parts;
+    }
+}

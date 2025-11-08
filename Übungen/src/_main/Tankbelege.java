@@ -1,7 +1,10 @@
-package main;
+package _main;
 
+import _übungen.Übung;
+import console.input.Input;
+import console.output.ProgramMessages;
 
-public class Tankbelege implements Übung { // TODO: runnin mean with visualization
+public class Tankbelege implements Übung {
 	
 	public static final String[] explainStrings = new String[] {
 			"In folgendem Programm geben Sie Ihre Tankbelege ein,",
@@ -13,10 +16,9 @@ public class Tankbelege implements Übung { // TODO: runnin mean with visualizat
 	
 	
 	public void start() {
-		util.General.explainProgram(explainStrings);
+		ProgramMessages.explainProgram(explainStrings);
 		
-		int startingMileage = getInput("Aktueller Kilometerstand: ", 0d, true);;
-		lastMileage = startingMileage;
+		lastMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
 
 		
 		System.out.print("\n - Erster Tankbeleg - \n");
@@ -30,7 +32,7 @@ public class Tankbelege implements Übung { // TODO: runnin mean with visualizat
 			
 			getAndPrintAvgConsumption();
 			
-			if (util.Menu.shouldExit()) {
+			if (console.menu.Menu.shouldExit()) {
 				return;
 			}
 			
@@ -39,12 +41,13 @@ public class Tankbelege implements Übung { // TODO: runnin mean with visualizat
 	}
 	
     private static int getInput(String prompt, double min, boolean minInclusive) {
-    	return util.Input.builder()
-    			.numType(util.Numbers.INT)
+    	
+    	return Input.builder()
+    			.typeInteger()
     			.prompt(prompt)
-    			.range(min, Integer.MAX_VALUE)
+    			.rangeValidation(min, Integer.MAX_VALUE)
     			.inclusivity(minInclusive, false)
-    			.getNumber();
+    			.get();
     }
     
     private static void updateVars(int refuelAmount, int currentMileage) {

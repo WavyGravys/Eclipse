@@ -3,8 +3,8 @@ package util;
 
 public class Math {
 	
-	public static boolean isInRange(
-			Number value, Number minimum, Number maximum, 
+	public static <N extends Number> boolean isInRange(
+			N value, N minimum, N maximum, 
 			boolean minInclusive, boolean maxInclusive) {
 		double val = value.doubleValue();
 		double min = minimum.doubleValue();

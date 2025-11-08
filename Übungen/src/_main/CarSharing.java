@@ -1,9 +1,11 @@
-package main;
+package _main;
 
+import _übungen.Übung;
+import console.input.Input;
+import console.output.ProgramMessages;
 
 public class CarSharing implements Übung {
-		
-	// settings TODO: settings file (JSON?)
+	
 	private static final Integer[] VEHICLE_CLASSES = {1,2};
 	private static final Integer[] KM_THRESHOLDS = {100,250,500,1000,Integer.MAX_VALUE};
 	//COSTS = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]
@@ -16,7 +18,7 @@ public class CarSharing implements Übung {
 	
 	
 	public void start() {
-		util.General.explainProgram(explainLines);
+		ProgramMessages.explainProgram(explainLines);
 		
 		while (true) {	
 			int[] data = getData();
@@ -25,17 +27,17 @@ public class CarSharing implements Übung {
 			
 			System.out.printf("Rechnungsbetrag: %.2f€ \n\n", cost);
 			
-			if (util.Menu.shouldExit()) {
+			if (console.menu.Menu.shouldExit()) {
 				return;
 			}
 		}
 	}
 	
 	private static int[] getData() {
-		int vehicleClassIndex = util.Input.getMatchingNumber(util.Numbers.INT, "Fahrzeugsklasee: ", VEHICLE_CLASSES);
+		int vehicleClassIndex = Input.getMatchingInt("Fahrzeugsklasee: ", VEHICLE_CLASSES);
 		vehicleClassIndex--;
-		int drivenKm = util.Input.getNumber(util.Numbers.INT, "Gefahrene Kilometer: ");
-		int hoursUsed = util.Input.getNumber(util.Numbers.INT, "Stunden genutzt: ");
+		int drivenKm = Input.getInt("Gefahrene Kilometer: ");
+		int hoursUsed = Input.getInt("Stunden genutzt: ");
 		
 		return new int[] {vehicleClassIndex,drivenKm,hoursUsed};
 	}
