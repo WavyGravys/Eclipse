@@ -17,7 +17,7 @@ public class InputSteps {
     interface BaseConfig<T> {
     	T prompt(String prompt);
     	T error(String error);
-    	T stopOnEmptyLine(boolean stop); // only has an impact on getMult
+    	T stopOnEmptyLine(); // only has an impact on getMult
     	T shouldFormat(boolean format);
         T delimiter(String delimiter);
         T exitConditions(String... exits);

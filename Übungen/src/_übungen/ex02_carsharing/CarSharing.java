@@ -1,6 +1,6 @@
-package _main;
+package _übungen.ex02_carsharing;
 
-import _übungen.Übung;
+import _main.Übung;
 import console.input.Input;
 import console.output.ProgramMessages;
 
@@ -11,10 +11,10 @@ public class CarSharing implements Übung {
 	//COSTS = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]
 	private static final Double[][] COSTS = {{0.33,0.31,0.29,0.27,0.25}, {0.38,0.36,0.34,0.32,0.30}};
 	private static final Double[] HOUR_COSTS = {3.00,4.00};
-	private static final String[] explainLines = new String[] {
+	public final String[] explainLines = new String[] {
 			"In folgendem Programm geben Sie Ihre Car Sharing daten ein,",
 			"womit Ihre Kosten für den Nutzen des Autos errechnet werden.",
-			};
+	};
 	
 	
 	public void start() {

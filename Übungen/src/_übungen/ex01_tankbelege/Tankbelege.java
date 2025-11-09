@@ -1,0 +1,74 @@
+package _übungen.ex01_tankbelege;
+
+import _main.Übung;
+import console.input.Input;
+import console.menu.Menu;
+import console.output.ProgramMessages;
+
+public class Tankbelege implements Übung {
+	
+	private final FuelConsumptionTracker tracker = new FuelConsumptionTracker();
+	
+	public final String[] explainStrings = new String[] {
+			"In folgendem Programm geben Sie Ihre Tankbelege ein,",
+			"mit welchen anschließend Ihr Durschnittsverbrauch errechnet wird.",
+	};
+	
+	public void start() {
+		ProgramMessages.explainProgram(explainStrings);
+     
+		int initialMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
+		tracker.setInitialMileage(initialMileage);
+		
+		System.out.print("\n - Erster Tankbeleg - \n");
+
+		while (true) {
+			int refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
+			int currentMileage = getInput("Aktueller Kilometerstand: ", 
+					(double) tracker.getLastMileage(), false);
+
+         tracker.recordRefueling(refuelAmount, currentMileage);
+         
+         System.out.println(tracker.getAverageConsumption());
+         
+         if (Menu.shouldExit()) { return; }
+         
+         System.out.print("\n - Neuer Tankbeleg - \n");
+         }
+	}
+	
+	private static int getInput(String prompt, double min, boolean minInclusive) {
+		return Input.builder()
+				.typeInteger()
+				.prompt(prompt)
+				.rangeValidation(min, Integer.MAX_VALUE)
+				.inclusivity(minInclusive, false)
+				.get();
+	}
+	
+	
+	private static class FuelConsumptionTracker {
+	    private int totalRefuelAmount = 0;
+	    private int totalDistanceDriven = 0;
+	    private int lastMileage;
+	    
+	    public void recordRefueling(int refuelAmount, int currentMileage) {
+	        totalRefuelAmount += refuelAmount;
+	        totalDistanceDriven += currentMileage - lastMileage;
+	        lastMileage = currentMileage;
+	    }
+	    
+	    public int getLastMileage() {
+	    	return this.lastMileage;
+	    }
+	    
+	    public void setInitialMileage(int mileage) {
+	        this.lastMileage = mileage;
+	    }
+	    
+	    public float getAverageConsumption() {
+	        if (totalDistanceDriven == 0) return 0;
+	        return totalRefuelAmount / (totalDistanceDriven / 100f);
+	    }
+	}
+}

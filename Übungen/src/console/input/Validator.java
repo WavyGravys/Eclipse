@@ -1,12 +1,13 @@
 package console.input;
 
 import util.Types;
+import util.ArrayUtils;
 import util.Function;
 
 public class Validator {
 	
 	public static Function<String, Boolean> string() {
-		return _ -> { return true; };
+		return s -> { return true; };
 	}
 	
     public static Function<String, Boolean> number(Types numType) {
@@ -65,4 +66,22 @@ public class Validator {
     public static boolean isValidInput(String input, Function<String, Boolean> validateFunc) {
 		return validateFunc.apply(input);
 	}
-}
+    
+    public static boolean isAllValid(String[] inputs, Function<String, Boolean> validateFunc) {
+    	for (String part : inputs) {
+    		if (!isValidInput(part, validateFunc)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    public static String[] getDefaultExitConditions(String[] exitConditions) {
+    	if (exitConditions == null || exitConditions.length == 0) {
+			exitConditions = new String[] {""};
+		} else {
+			ArrayUtils.append(exitConditions, "");
+		}
+		return exitConditions;
+	}
+    }

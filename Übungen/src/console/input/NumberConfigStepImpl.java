@@ -15,7 +15,10 @@ public class NumberConfigStepImpl<T> implements NumberConfigStep<T>{
 	
 	@Override public NumberConfigStep<T> prompt(String p) {config.prompt = p; return this;}
 	@Override public NumberConfigStep<T> error(String e) {config.error = e; return this;}
-	@Override public NumberConfigStep<T> stopOnEmptyLine(boolean e) {config.stopOnEmptyLine = e; return this;}
+	@Override public NumberConfigStep<T> stopOnEmptyLine() {
+		config.exitConditions = Validator.getDefaultExitConditions(config.exitConditions);
+		return this;
+	}
 	@Override public NumberConfigStep<T> shouldFormat(boolean f) {config.shouldFormat = f; return this;}
 	@Override public NumberConfigStep<T> delimiter(String d) {config.delimiter = d; return this;}
 	@Override public NumberConfigStep<T> exitConditions(String... x) {config.exitConditions = x; return this;}

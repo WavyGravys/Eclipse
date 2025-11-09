@@ -12,15 +12,34 @@ public class ProgramMessages {
 		}
 	}
 	
+	public static boolean printWelcomeMessage() {
+		if (!ConsoleAnimations.type("[══════] Wilkommen [══════] ", 17, 50, false)) { return false;}
+		System.out.println("(drücken Sie Enter um zu Skippen)");
+		TimeUtils.sleep(100);
+		return true;
+	}
+	
 	public static void explainProgram(String[] explainLines) {
 		// if (printFunc) { return; } is the exit check for Skipped
 		
-		if (!ConsoleAnimations.typeLines(explainLines, 15, 50, 200, true)) { return; }
+		if (!printWelcomeMessage()) {
+			System.out.println();
+			return;
+		}
 		
-		TimeUtils.sleep(100);
+		if (!ConsoleAnimations.typeLines(explainLines, 15, 50, 200, true)) {
+			System.out.println();
+			return;
+		}
 		
-		if (!ConsoleAnimations.type("3 2 1 - ", 150, 150, true)) { return; }
-		if (!ConsoleAnimations.type("viel Spaß!", 80, 80, true)) { return; }
+		if (!ConsoleAnimations.type("3 2 1 - ", 125, 125, true)) {
+			System.out.println(); 
+			return; 
+		}
+		if (!ConsoleAnimations.type("viel Spaß!", 25, 50, true)) {
+			System.out.println();
+			return;
+		}
 			
 		System.out.print("\n\n");
 	}

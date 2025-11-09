@@ -1,8 +1,11 @@
 package util;
 
-import java.util.Arrays;
-
 public class ArrayUtils {
+	
+	public static <T> T[] append(T[] arr, T val) {
+		arr[arr.length - 1] = val;
+		return arr;
+	}
 	
 	public static void validateIntArray(int[] array) {
 		if (array.length == 0) {
@@ -137,12 +140,40 @@ public class ArrayUtils {
 	}
 	
 	public static Object toPrimitive(Types type, Object[] boxed) {
-		return switch(type) {
-		case INT -> Arrays.stream((Integer[]) boxed).mapToInt(Integer::intValue).toArray();
-		case LONG -> Arrays.stream((Long[])boxed).mapToLong(Long::longValue).toArray();
-		case DOUBLE -> Arrays.stream((Double[]) boxed).mapToDouble(Double::doubleValue).toArray();
-		default -> throw new IllegalArgumentException("Unexpected value: " + type);
-		
-		};
+	    int len = boxed.length;
+	    return switch(type) {
+	        case STRING -> boxed;
+	        case BYTE -> {
+	            byte[] arr = new byte[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Byte) boxed[i];
+	            yield arr;
+	        }
+	        case SHORT -> {
+	            short[] arr = new short[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Short) boxed[i];
+	            yield arr;
+	        }
+	        case INT -> {
+	            int[] arr = new int[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Integer) boxed[i];
+	            yield arr;
+	        }
+	        case LONG -> {
+	            long[] arr = new long[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Long) boxed[i];
+	            yield arr;
+	        }
+	        case FLOAT -> {
+	            float[] arr = new float[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Float) boxed[i];
+	            yield arr;
+	        }
+	        case DOUBLE -> {
+	            double[] arr = new double[len];
+	            for (int i = 0; i < len; i++) arr[i] = (Double) boxed[i];
+	            yield arr;
+	        }
+	        default -> throw new IllegalArgumentException("Unexpected value: " + type);
+	    };
 	}
 }

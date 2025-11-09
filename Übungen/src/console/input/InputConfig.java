@@ -6,8 +6,7 @@ import util.Types;
 public class InputConfig {
 	Types type;
 	public String prompt = "Eingabe: ";
-    public String error = "ERROR: [%s] ist keine valide Eingabe\n";
-    boolean stopOnEmptyLine = true;
+    public String error = "ERROR: \"%s\" ist keine valide Eingabe\n";
     boolean shouldFormat = false;
     String delimiter = ", ";
     String[] exitConditions = new String[] {""};

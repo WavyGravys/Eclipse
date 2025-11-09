@@ -4,9 +4,9 @@ import util.Types;
 
 public class Parser {
 	
-	public static Object[] parse(String input, Types type) {
-        String[] parts = getCleanParts(input);
-        Object[] parsed = new Object[parts.length];
+	public static Object[] parse(String[] parts, Types type) {
+		
+		Object[] parsed = new Object[parts.length];
         
         for (int i = 0; i < parts.length; i++) {
             parsed[i] = type.parse(parts[i]);
@@ -14,8 +14,8 @@ public class Parser {
         
         return parsed;
     }
-
-    private static String[] getCleanParts(String input) {
+	
+	public static String[] getCleanParts(String input) {
         String[] parts = input.trim().split("[,\\s]+");
         
         if (parts[0].isEmpty() && parts.length > 0) {

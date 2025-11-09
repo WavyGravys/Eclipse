@@ -41,6 +41,8 @@ public class MenuBuilder {
     
     public int show() {
     	MenuDisplay.displayMenu(config);
-        return MenuInput.getSelection(config);
+    	int choice = MenuInput.getSelection(config);
+    	System.out.println();
+    	return choice;
     }
 }

@@ -9,8 +9,8 @@ public class MenuDisplay {
         ConsoleAnimations.linesWithDelay(config.menuStrings, config.lineDelay, 1);
     }
 	
-	public static void loadingBar(int dotAmount, double delay, boolean shouldPrintSkipping) {
-        delay = delay * (double) (25 / dotAmount);
+	public static void loadingBar(int dotAmount, int loadTime, boolean shouldPrintSkipping) {
+        int delay = (int) (loadTime / (double) dotAmount);
         String loadingBar = "[" + "═".repeat(dotAmount) + "]";
         ConsoleAnimations.type(loadingBar, (int) delay, 0, false);
     }

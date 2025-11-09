@@ -14,7 +14,10 @@ public class StringConfigStepImpl implements StringConfigStep{
 	
 	@Override public StringConfigStep prompt(String p) {config.prompt = p; return this;}
 	@Override public StringConfigStep error(String e) {config.error = e; return this;}
-	@Override public StringConfigStep stopOnEmptyLine(boolean e) {config.stopOnEmptyLine = e; return this;}
+	@Override public StringConfigStep stopOnEmptyLine() {
+		config.exitConditions = Validator.getDefaultExitConditions(config.exitConditions);
+		return this;
+	}
 	@Override public StringConfigStep shouldFormat(boolean f) {config.shouldFormat = f; return this;}
 	@Override public StringConfigStep delimiter(String d) {config.delimiter = d; return this;}
 	@Override public StringConfigStep exitConditions(String... x) {config.exitConditions = x; return this;}

@@ -1,8 +1,11 @@
 package _main;
 
-import _übungen.Übung;
+import _übungen.ex01_tankbelege.Tankbelege;
+import _übungen.ex02_carsharing.CarSharing;
+import _übungen.ex03_feldvariablen.Feldvariablen;
 import console.menu.Menu;
 import console.output.ProgramMessages;
+import util.ArrayUtils;
 import util.TimeUtils;
 
 public class Übungen {
@@ -13,28 +16,25 @@ public class Übungen {
 		    new Feldvariablen(),
 		    
 		    /* Add new Übungen here. 
-		     * It's Class must implent Übung and
-		     * it's main function has to be
-		     * public static void start()
+		     * It's Class must implent Übung.
 		     */
 		};
 	
 	
 	public static void main(String[] args) {
 		String[] menu = createMenuString();
-		Integer[] menuOptions = util.ArrayUtils.integerRange(OPTIONS.length + 1);
+		Integer[] menuOptions = ArrayUtils.integerRange(OPTIONS.length + 1);
 		
 		TimeUtils.sleep(200); // to reduce the lag on startup
 		
 		while (true) {
 			int menuChoice = Menu.basic(menu, menuOptions);
 			
-			if (menuChoice == 0) {ProgramMessages.closeProgram();}
-				
-			System.out.print("\n========== Wilkommen ========== (drücken Sie Enter um zu Skippen)\n");
-			OPTIONS[menuChoice - 1].start();
+			if (menuChoice == 0) {
+				ProgramMessages.closeProgram();
+			}
 			
-			System.out.println();
+			OPTIONS[menuChoice - 1].start();
 		}
 	}
 	

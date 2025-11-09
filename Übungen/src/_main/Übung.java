@@ -1,7 +1,7 @@
-package _übungen;
+package _main;
 
 
 @FunctionalInterface
 public interface Übung {
-    void start();
+	void start();
 }

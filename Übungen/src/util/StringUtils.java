@@ -10,7 +10,7 @@ public class StringUtils {
     			input = input  + " ";
     		}
     		
-    		input = input + "...";
+    		input = input + "...]";
     	}
     	
     	return input;

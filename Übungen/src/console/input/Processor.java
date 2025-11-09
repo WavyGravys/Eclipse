@@ -6,10 +6,12 @@ import util.Types;
 
 public class Processor {
 	
-	public static ArrayList<Object> processInput(String input, ArrayList<Object> inputs, Types type) {
-    	Object[] toAdd = Parser.parse(input, type);
+	public static ArrayList<Object> processInputs(
+			 String[] parts, ArrayList<Object> inputs, Types type) {
     	
-    	for (Object elem : toAdd) {
+		Object[] toAdd = Parser.parse(parts, type);
+		
+		for (Object elem : toAdd) {
     		inputs.add(elem);
     	}
     	

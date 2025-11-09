@@ -23,6 +23,10 @@ private final InputConfig config;
 			
 			String input = Reader.readLine();
     		
+			if (shouldExit(input, config.exitConditions)) {
+	        	return null;
+	        }
+			
     		String formattedInput = InputFormatter.formatInput(input, config);
     		
     		if (Validator.isValidInput(formattedInput, config.validateFunc)) {
@@ -48,19 +52,19 @@ private final InputConfig config;
 
 	        String formattedInput = InputFormatter.formatInput(input, config);
 	        
-			if (!Validator.isValidInput(formattedInput, config.validateFunc)) {
-				ProgramMessages.printError(input, config.error);
-				continue;
-			}
-			
+	        String[] parts = Parser.getCleanParts(formattedInput);
+
+	        if (!Validator.isAllValid(parts, config.validateFunc)) {
+	        	ProgramMessages.printError(input, config.error);
+	        	continue;
+	        }
 	        
-	        inputs = Processor.processInput(formattedInput, inputs, config.type);
+	        ProgramMessages.printParseConfirmation(parts);
+	        
+	        inputs = Processor.processInputs(parts, inputs, config.type);
+	        
 	    }
 	}
-    
-    private boolean shouldStop(String input) {
-        return config.stopOnEmptyLine && input.isEmpty();
-    }
     
     public static boolean shouldExit(String input, String[] exitConditions) {
 	    if (exitConditions == null) { return false; }
