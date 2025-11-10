@@ -1,5 +1,6 @@
 package math;
 
+import java.math.BigDecimal;
 
 public class MathUtils {
 	
@@ -14,6 +15,13 @@ public class MathUtils {
 		boolean belowMax = maxInclusive ? val <= max : val < max;;
 		
 		return aboveMin && belowMax;
+	}
+	
+	public static double roundTo(double value, int decimal) {
+		BigDecimal valueX100 = new BigDecimal(value * 100);
+		return (double) (valueX100.intValue()) / 100;
+		
+		
 	}
 	
 	// built into java.lang.Math

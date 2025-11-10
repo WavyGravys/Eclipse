@@ -62,11 +62,16 @@ public class ArrayUtils {
 		return sb.toString();
 	}
 	
-	public static String combineStrings(String[] array) throws IllegalArgumentException {
+	public static String toString(String[] array) throws IllegalArgumentException {
 		StringBuilder sb = new StringBuilder("[");
-		for (String s : array) {
-			sb.append(s);
+		int lastIndex = array.length -1;
+		
+		for (int i = 0; i < lastIndex; i++) {
+			sb.append(array[i]);
+			sb.append(", ");
 		}
+		sb.append(array[lastIndex]);
+		sb.append("]");
 		
 		return sb.toString();
 	}

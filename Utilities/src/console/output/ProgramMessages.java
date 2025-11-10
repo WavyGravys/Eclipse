@@ -51,7 +51,7 @@ public class ProgramMessages {
 	}
 	
 	public static void printParseConfirmation(String[] parsed) {
-    	String parsedNumbers = ArrayUtils.combineStrings(parsed);
+    	String parsedNumbers = ArrayUtils.toString(parsed);
     	parsedNumbers = StringUtils.clampString(parsedNumbers, 30);
     	
     	System.out.print("Eingabe erfolgreich als ");
