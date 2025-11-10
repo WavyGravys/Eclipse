@@ -4,6 +4,14 @@ import console.input.InputSteps.TypeStep;
 
 public class Input {
 	
+	public static void clearScannerCache() {
+        while (Reader.hasAvailableInput()) {
+            try {
+				System.in.read();
+			} catch (Exception e) {}
+        }
+	}
+	
 	public static boolean checkForAndClearInput() {
         try {
         	if (System.in.available() > 0) {
@@ -22,7 +30,7 @@ public class Input {
             	System.out.println("Skipped!");
             }
             
-            Reader.clearScannerCache();
+            clearScannerCache();
             return true;
     	}
 		return false;

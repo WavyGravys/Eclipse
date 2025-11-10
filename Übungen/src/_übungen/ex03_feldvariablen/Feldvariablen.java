@@ -4,6 +4,7 @@ import _main.Übung;
 import console.input.Input;
 import console.menu.Menu;
 import console.output.ProgramMessages;
+import util.ArrayUtils;
 
 
 public class Feldvariablen implements Übung {
@@ -23,31 +24,37 @@ public class Feldvariablen implements Übung {
 			};
 	
 	public void start() {
+		MenuLogic menu = new MenuLogic();
+		
 		ProgramMessages.explainProgram(explainStrings);
 		
+		int[] numbers = new int[0];
 		while (true) {
-			int[] numbers =  getNumbers();
+			
+			if (menu.menuState == MenuLogic.MenuState.ADD) {
+				numbers = ArrayUtils.appendIntArray(numbers, getNumbers());
+			} else {
+				numbers = getNumbers();
+			}
 			
 			if (numbers.length == 0 || numbers == null) {
 				System.out.print("[ ¯\\_(ツ)_/¯ ]\n\n");
 				
-				if (Menu.shouldExit()) {
-					return;
-				}
+				if (Menu.shouldExit()) { return; }
 				continue;
 			}
 			
 			NumberDisplay.display(numbers);
-
-			if (!MenuLogic.menu(numbers)) {
-				return;
-			}
+			
+			numbers = menu.mainMenu(numbers);
+			if (menu.menuState == MenuLogic.MenuState.EXIT) { return; }
 		}
 	}
 	
 	private static int[] getNumbers() {
 		return (int[]) Input.builder()
 				.typeInteger()
+				.stopOnEmptyLine()
 				.numberValidation()
 				.getMult();
 	}

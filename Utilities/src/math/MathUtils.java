@@ -1,7 +1,7 @@
-package util;
+package math;
 
 
-public class Math {
+public class MathUtils {
 	
 	public static <N extends Number> boolean isInRange(
 			N value, N minimum, N maximum, 
@@ -15,4 +15,16 @@ public class Math {
 		
 		return aboveMin && belowMax;
 	}
+	
+	// built into java.lang.Math
+	/* 
+	public static int clamp(int value, int min, int max) {
+		if (value < min) {
+			return min;
+		} else if (value > max) {
+			return max;
+		}
+		return value;
+	}
+	*/
 }

@@ -7,7 +7,7 @@ import util.Function;
 public class Validator {
 	
 	public static Function<String, Boolean> string() {
-		return s -> { return true; };
+		return _ -> { return true; };
 	}
 	
     public static Function<String, Boolean> number(Types numType) {
@@ -30,7 +30,7 @@ public class Validator {
             } catch (Exception e) {
                 return false;
             }
-            return util.Math.isInRange(number, min, max, minInclusive, maxInclusive);
+            return math.MathUtils.isInRange(number, min, max, minInclusive, maxInclusive);
         };
     }
     
@@ -80,7 +80,7 @@ public class Validator {
     	if (exitConditions == null || exitConditions.length == 0) {
 			exitConditions = new String[] {""};
 		} else {
-			ArrayUtils.append(exitConditions, "");
+			exitConditions = ArrayUtils.appendStringArray(exitConditions, new String[] {""});
 		}
 		return exitConditions;
 	}

@@ -5,8 +5,7 @@ import console.input.Input;
 import console.menu.Menu;
 import console.output.ProgramMessages;
 
-public class Tankbelege implements Übung {
-	
+public class Tankbelege implements Übung { // TODO: gleitender Mittelwert
 	private final FuelConsumptionTracker tracker = new FuelConsumptionTracker();
 	
 	public final String[] explainStrings = new String[] {
@@ -21,20 +20,19 @@ public class Tankbelege implements Übung {
 		tracker.setInitialMileage(initialMileage);
 		
 		System.out.print("\n - Erster Tankbeleg - \n");
-
 		while (true) {
 			int refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
 			int currentMileage = getInput("Aktueller Kilometerstand: ", 
 					(double) tracker.getLastMileage(), false);
 
-         tracker.recordRefueling(refuelAmount, currentMileage);
+        tracker.recordRefueling(refuelAmount, currentMileage);
+        
+        printAverageConsumption();
+        
+        if (Menu.shouldExit()) { return; }
          
-         System.out.println(tracker.getAverageConsumption());
-         
-         if (Menu.shouldExit()) { return; }
-         
-         System.out.print("\n - Neuer Tankbeleg - \n");
-         }
+        System.out.print("\n - Neuer Tankbeleg - \n");
+		}
 	}
 	
 	private static int getInput(String prompt, double min, boolean minInclusive) {
@@ -44,6 +42,16 @@ public class Tankbelege implements Übung {
 				.rangeValidation(min, Integer.MAX_VALUE)
 				.inclusivity(minInclusive, false)
 				.get();
+	}
+	
+	private void printAverageConsumption() {
+        StringBuilder sb = new StringBuilder("\nIhr Treibstoffverbrauch ist: ");
+        sb.append(tracker.getAverageConsumption());
+        sb.append(" L/100Km.\n");
+        String message = sb.toString();
+        System.out.print(message);
+        Menu.loadingBar(message.length(), 1000, false);
+        System.out.println();
 	}
 	
 	

@@ -2,44 +2,52 @@ package util;
 
 public class ArrayUtils {
 	
-	public static <T> T[] append(T[] arr, T val) {
-		arr[arr.length - 1] = val;
-		return arr;
+	public static int[] appendIntArray(int[] arr1, int[] arr2) {
+		int[] result = new int[arr1.length + arr2.length];		
+		System.arraycopy(arr1, 0, result, 0, arr1.length);
+		System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
+		return result;
 	}
 	
-	public static void validateIntArray(int[] array) {
-		if (array.length == 0) {
-			throw new IllegalArgumentException("array cannot be empty");
-		}
+	public static String[] appendStringArray(String[] arr1, String[] arr2) {
+		String[] result = new String[arr1.length + arr2.length];		
+		System.arraycopy(arr1, 0, result, 0, arr1.length);
+		System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
+		return result;
 	}
+	
+	public static int[] sortInt(int[] array, boolean ascending) {
+		
+		Function<Integer, Boolean> isInOrder = index -> {
+			if (ascending) {
+				return array[index] > array[index + 1];
+			} else {
+				return array[index] < array[index + 1];
+			}
+		};
+		
+		int lastIndex = array.length - 1;
+		
+		while (true) {
+			int numSorted = 0;
+			for (int  i = 0; i < lastIndex; i++) {
+				if (isInOrder.apply(i)) {
+					int tmp = array[i];
+					array[i] = array[i + 1];
+					array[i + 1] = tmp;
+					numSorted = 0;
+				} else {
+					numSorted++;
+				}
+			}
+			
+			if (numSorted == lastIndex) break;
+		}
+		
+		return array;
+		}
 	
 	public static String intToString(int[] array) throws IllegalArgumentException  {
-		if (array.length == 0) {return ""; }
-		
-		String returnString = "[";
-		
-		for (int i = 0; i < array.length - 1; i++) {
-			returnString = returnString + array[i] + ", ";
-		}
-		returnString = returnString + array[array.length - 1] + "]";
-		
-		return returnString;
-	}
-	
-	public static String numberToString(Number[] array) throws IllegalArgumentException  {
-		if (array.length == 0) {return ""; }
-		
-		String returnString = "[";
-		
-		for (int i = 0; i < array.length - 1; i++) {
-			returnString = returnString + array[i] + ", ";
-		}
-		returnString = returnString + array[array.length - 1] + "]";
-		
-		return returnString;
-	}
-	
-	public static String toString(Object[] array) throws IllegalArgumentException  {
 		if (array.length == 0) {return ""; }
 		
 		StringBuilder sb = new StringBuilder("[");
@@ -52,6 +60,21 @@ public class ArrayUtils {
 		sb.append("]");
 		
 		return sb.toString();
+	}
+	
+	public static String combineStrings(String[] array) throws IllegalArgumentException {
+		StringBuilder sb = new StringBuilder("[");
+		for (String s : array) {
+			sb.append(s);
+		}
+		
+		return sb.toString();
+	}
+	
+	public static void validateIntArray(int[] array) {
+		if (array.length == 0) {
+			throw new IllegalArgumentException("array cannot be empty");
+		}
 	}
 	
 	public static long sumInt(int[] array) throws IllegalArgumentException  {
@@ -70,10 +93,11 @@ public class ArrayUtils {
 		validateIntArray(array);
 		
 		long sum = 0;
-	    
+		
 		for (int i = startIndex; i <= lastIndex; i++) {
 	        sum += array[i];
 	    }
+		
 	    return sum;
 	}
 	
@@ -117,6 +141,13 @@ public class ArrayUtils {
 		}
 		
 		return biggestNumber;
+	}
+	
+	public static double avgInt(int[] array) throws IllegalArgumentException {
+		validateIntArray(array);
+		
+		long sum = sumInt(array);
+		return (double) sum / (double) array.length;
 	}
 	
 	public static int[] intRange(int n) {

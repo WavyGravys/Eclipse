@@ -50,8 +50,8 @@ public class ProgramMessages {
 		System.exit(0);
 	}
 	
-	public static void printParseConfirmation(Object[] parsed) {
-    	String parsedNumbers = ArrayUtils.toString(parsed);
+	public static void printParseConfirmation(String[] parsed) {
+    	String parsedNumbers = ArrayUtils.combineStrings(parsed);
     	parsedNumbers = StringUtils.clampString(parsedNumbers, 30);
     	
     	System.out.print("Eingabe erfolgreich als ");

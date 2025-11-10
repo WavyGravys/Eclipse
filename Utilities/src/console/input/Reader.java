@@ -22,12 +22,4 @@ public class Reader {
             return false;
         }
     }
-
-    public static void clearScannerCache() {
-        while (hasAvailableInput()) {
-            try {
-				System.in.read();
-			} catch (Exception e) {}
-        }
-	}
 }

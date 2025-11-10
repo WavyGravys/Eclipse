@@ -2,52 +2,60 @@ package _übungen.ex03_feldvariablen;
 
 import console.menu.Menu;
 import console.output.ProgramMessages;
+import util.ArrayUtils;
 
 public class NumberDisplay {
-	private static int NUM_COLUMNS = 5;
-	private static int INSIDE_BRACKET_OFFSET = 4;
-	private static int OUTSIDE_BRACKET_OFFSET = 1;
-	private static String DELIMETER = "  ";
-	private static boolean IS_DYNAMIC_SPACING = true;
-	private static boolean IN_LINE_BRACKETS = true;
 
 	public static void display(int[] numbers) {
-	    if (numbers.length == 0) { return; }
-	    else if (numbers.length < NUM_COLUMNS) { 
-			NUM_COLUMNS = numbers.length; 
-		}
-	    
-	    DisplayConfig config = new DisplayConfig(numbers);
+		DisplayConfig config = new DisplayConfig(numbers);
+
+		if (numbers.length == 0) { return; }
+	    else 
 	    
 	    printTopLoadingBar(config);
 	    printOpeningBracket(config);
 	    printNumberGrid(numbers, config);
 	    printClosingBracket(numbers, config);
-	    printBottomLoadingBar(config);
+	    printBottomLoadingBar(numbers, config);
 	}
 	
 	private static class DisplayConfig {
-	    final int[] columnWidths;
+		private static int INSIDE_BRACKET_OFFSET = 4;
+		private static int OUTSIDE_BRACKET_OFFSET = 1;
+		private static String DELIMETER = "  ";
+		private static boolean IS_DYNAMIC_SPACING = true;
+		private static boolean IN_LINE_BRACKETS = true;
+		
+		private int numColumns = 5;
+		final int[] columnWidths;
 	    final int spacing;
 	    final int loadingBarDotAmount;
 	    final byte fullOffset;
 	    
 	    DisplayConfig(int[] numbers) {
-	    	this.columnWidths = calculateColumnWidths(numbers);
+	    	this.numColumns = updateNumColumns(numbers);
+	    	this.columnWidths = calculateColumnWidths(numbers, this.numColumns);
 		    this.spacing = calculateSpacing(numbers);
-		    this.fullOffset = (byte) (INSIDE_BRACKET_OFFSET + OUTSIDE_BRACKET_OFFSET + 1);
-		    this.loadingBarDotAmount = calculateLoadingBarDotAmount(columnWidths, spacing, fullOffset);
+		    this.loadingBarDotAmount = calculateLoadingBarDotAmount(this.numColumns, this.columnWidths, this.spacing);
+		    this.fullOffset = calculateFulOffset();
 	    }
 	    
-	    private static int[] calculateColumnWidths(int[] numbers) {
-			int[] columnWidths = new int[NUM_COLUMNS];
+	    private int updateNumColumns(int[] numbers) {
+	    	if (numbers.length < this.numColumns) { 
+	    		return numbers.length; 
+			}
+	    	return this.numColumns;
+	    }
+	    
+	    private static int[] calculateColumnWidths(int[] numbers, int numColumns) {
+			int[] columnWidths = new int[numColumns];
 
-			for (int column = 0; column < NUM_COLUMNS; column++) {
+			for (int column = 0; column < numColumns; column++) {
 				columnWidths[column] = 0;
 			}
 
 			for (int index = 0; index < numbers.length; index++) {
-				int collumn = index % NUM_COLUMNS;
+				int collumn = index % numColumns;
 				int numDigits = String.valueOf(numbers[index]).length();
 
 				if (columnWidths[collumn] < numDigits) {
@@ -72,9 +80,13 @@ public class NumberDisplay {
 			return spacing;
 		}
 	    
-	    private static int calculateLoadingBarDotAmount(int[] columnWidths, int spacing, byte fullOffset) {
-			int allDelimiter = DELIMETER.length() * NUM_COLUMNS;
-			int allSpacing =  IS_DYNAMIC_SPACING ? (int) util.ArrayUtils.sumInt(columnWidths) : spacing * NUM_COLUMNS;
+	    private static  byte calculateFulOffset() {
+	    	return (byte) (INSIDE_BRACKET_OFFSET + OUTSIDE_BRACKET_OFFSET + 1);
+	    }
+	    
+	    private static int calculateLoadingBarDotAmount(int numColumns, int[] columnWidths, int spacing) {
+			int allDelimiter = DELIMETER.length() * numColumns;
+			int allSpacing =  !IS_DYNAMIC_SPACING ? spacing * numColumns : (int) ArrayUtils.sumInt(columnWidths);
 			int offsetWidth = INSIDE_BRACKET_OFFSET * 2 + OUTSIDE_BRACKET_OFFSET * 2;
 			
 			return  allDelimiter + allSpacing  - DELIMETER.length() + offsetWidth;
@@ -83,13 +95,13 @@ public class NumberDisplay {
 	
 	private static void printTopLoadingBar(DisplayConfig config) {
 		System.out.println();
-		Menu.loadingBar(config.loadingBarDotAmount, 600, false);
+		Menu.loadingBar(config.loadingBarDotAmount, 400, false);
 		System.out.println();
 	}
 
 	private static void printNumberGrid(int[] numbers, DisplayConfig config) {
 		for (int index = 0; index < numbers.length - 1; index++) {
-			int columnIndex = index % NUM_COLUMNS;
+			int columnIndex = index % config.numColumns;
 			
 			printLineBreak(index, columnIndex, config);
 			
@@ -107,11 +119,11 @@ public class NumberDisplay {
 	}
 	
 	private static void printOpeningBracket(DisplayConfig config) {
-		ProgramMessages.spaces(OUTSIDE_BRACKET_OFFSET);
+		ProgramMessages.spaces(DisplayConfig.OUTSIDE_BRACKET_OFFSET);
 		System.out.print("[");
 		
-		if (IN_LINE_BRACKETS) {
-			ProgramMessages.spaces((int) INSIDE_BRACKET_OFFSET);
+		if (DisplayConfig.IN_LINE_BRACKETS) {
+			ProgramMessages.spaces((int) DisplayConfig.INSIDE_BRACKET_OFFSET);
 		} else {
 			System.out.println();
 			ProgramMessages.spaces(config.fullOffset);
@@ -120,8 +132,8 @@ public class NumberDisplay {
 	
 	private static void printNumberWithSpacing(int number, int columnIndex, DisplayConfig config) {
 		System.out.print(number);
-		System.out.print(DELIMETER);
-		if (columnIndex == NUM_COLUMNS - 1) { return; }
+		System.out.print(DisplayConfig.DELIMETER);
+		if (columnIndex == config.numColumns - 1) { return; }
 		
 		int spacesNeeded = getSpacing(number, columnIndex, config);
 		ProgramMessages.spaces(spacesNeeded);
@@ -129,14 +141,14 @@ public class NumberDisplay {
 
 	private static int getSpacing(int number, int columnIndex, DisplayConfig config) {
 		int numDigits = Integer.toString(number).length();
-		if (IS_DYNAMIC_SPACING) {
+		if (DisplayConfig.IS_DYNAMIC_SPACING) {
 			return config.columnWidths[columnIndex] - numDigits;
 		}
 		return config.spacing - numDigits;
 	}
 	
 	private static void printLastNumber(int[] numbers, DisplayConfig config) {
-		if (numbers.length % NUM_COLUMNS == 1) {
+		if (numbers.length % config.numColumns == 1) {
 			System.out.println();
 			ProgramMessages.spaces(config.fullOffset);
 		}
@@ -146,40 +158,42 @@ public class NumberDisplay {
 	}
 	
 	private static void printClosingBracket(int[] numbers, DisplayConfig config) {
-		if (IN_LINE_BRACKETS) {
+		if (DisplayConfig.IN_LINE_BRACKETS) {
 			int spacesToEnd = calculateSpacesToEnd(numbers, config);
 			ProgramMessages.spaces(spacesToEnd);
 			System.out.print("]");
 		} else {
 			System.out.println();
-			ProgramMessages.spaces(OUTSIDE_BRACKET_OFFSET);
+			ProgramMessages.spaces(DisplayConfig.OUTSIDE_BRACKET_OFFSET);
 			System.out.print("]");
 		}
 	}
 
 	private static int calculateSpacesToEnd(int[] numbers, DisplayConfig config) {
 		int lastIndex = numbers.length - 1;
-	    int columnsBeforeLast = (lastIndex % NUM_COLUMNS);
+	    int columnsBeforeLast = (lastIndex % config.numColumns);
 	    int lastNumberLength = Integer.toString(numbers[lastIndex]).length();
 	    
 	    int spacingWidth = calculateSpacingWidth(columnsBeforeLast, config);
-	    int delimiterWidth = DELIMETER.length() * columnsBeforeLast;
+	    int delimiterWidth = DisplayConfig.DELIMETER.length() * columnsBeforeLast;
 	    int usedWidth = config.fullOffset + spacingWidth + delimiterWidth + lastNumberLength;
 	    
-	    return config.loadingBarDotAmount - usedWidth + 1 - OUTSIDE_BRACKET_OFFSET;
+	    return config.loadingBarDotAmount - usedWidth + 1 - DisplayConfig.OUTSIDE_BRACKET_OFFSET;
 	}
 	
 	private static int calculateSpacingWidth(int columnCount, DisplayConfig config) {
-	    if (IS_DYNAMIC_SPACING && columnCount > 1) {
-	        return (int) util.ArrayUtils.sumIntInRange(config.columnWidths, 0, columnCount - 1);
+	    if (DisplayConfig.IS_DYNAMIC_SPACING && columnCount > 1) {
+	        return (int) ArrayUtils.sumIntInRange(config.columnWidths, 0, columnCount - 1);
 	    }
 	    return config.spacing * columnCount;
 	}
 	
-	private static void printBottomLoadingBar(DisplayConfig config) {
-		System.out.println();
-		Menu.loadingBar(config.loadingBarDotAmount, 3000, true);
+	private static void printBottomLoadingBar(int[] numbers, DisplayConfig config) {
+		int loadingBartime = numbers.length * 400;
+		loadingBartime = Math.clamp(loadingBartime, 400, 3000);
+		
+		System.out.print("\n");
+		Menu.loadingBar(config.loadingBarDotAmount, loadingBartime, true);
 		System.out.print("\n\n");
 	}
-
 }

@@ -1,7 +1,6 @@
 package console.output;
 
 import console.input.Input;
-import console.input.Reader;
 import util.TimeUtils;
 
 public class ConsoleAnimations {
@@ -69,7 +68,7 @@ public class ConsoleAnimations {
             return false;
     	}
         
-        Reader.clearScannerCache();
+        Input.clearScannerCache();
         return true;
 	}
 }

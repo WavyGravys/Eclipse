@@ -1,5 +1,7 @@
 package console.menu;
 
+import console.input.Input;
+
 public class Menu {
 	
     public static MenuBuilder builder() {
@@ -20,5 +22,6 @@ public class Menu {
     
     public static void loadingBar(int dotAmount, int loadTime, boolean shouldPrintSkipping) {
         MenuDisplay.loadingBar(dotAmount, loadTime, shouldPrintSkipping);
+        Input.clearScannerCache();
     }
 }

@@ -8,7 +8,7 @@ import util.ArrayUtils;
 
 public class OutputStepImpl<T> implements OutputStep<T>{
 	
-private final InputConfig config;
+	private final InputConfig config;
 	
 	public OutputStepImpl(InputConfig config) {
         this.config = config;
