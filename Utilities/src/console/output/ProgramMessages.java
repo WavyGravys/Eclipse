@@ -1,20 +1,16 @@
 package console.output;
 
-import util.ArrayUtils;
-import util.StringUtils;
 import util.TimeUtils;
 
 public class ProgramMessages {
 	
 	public static void spaces(int n) {
-		for (int i = 0; i < n; i++) {
-			System.out.print(" ");
-		}
+		System.out.print(" ".repeat(n));
 	}
 	
 	public static boolean printWelcomeMessage() {
-		if (!ConsoleAnimations.type("[══════] Wilkommen [══════] ", 17, 50, false)) { return false;}
-		System.out.println("(drücken Sie Enter um zu Skippen)");
+		if (!ConsoleAnimations.type("[══════] Wilkommen [══════]", 17, 50, false)) { return false;}
+		System.out.println(" (drücken Sie Enter um zu Skippen)");
 		TimeUtils.sleep(100);
 		return true;
 	}
@@ -49,18 +45,4 @@ public class ProgramMessages {
 		ConsoleAnimations.type(" . . .", 150, 150, true);
 		System.exit(0);
 	}
-	
-	public static void printParseConfirmation(String[] parsed) {
-    	String parsedNumbers = ArrayUtils.toString(parsed);
-    	parsedNumbers = StringUtils.clampString(parsedNumbers, 30);
-    	
-    	System.out.print("Eingabe erfolgreich als ");
-    	System.out.print(parsedNumbers);
-    	System.out.print(" geparst.\n");
-	}
-	
-	public static void printError(String input, String error) {
-        String clamped = StringUtils.clampString(input, 30);
-        System.out.printf(error, clamped);
-    }
 }

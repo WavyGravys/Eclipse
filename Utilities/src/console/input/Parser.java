@@ -1,5 +1,7 @@
 package console.input;
 
+import util.ArrayUtils;
+import util.StringUtils;
 import util.Types;
 
 public class Parser {
@@ -26,4 +28,13 @@ public class Parser {
         }
         return parts;
     }
+	
+	public static void printParseConfirmation(String[] parsed) {
+    	String parsedNumbers = ArrayUtils.toString(parsed);
+    	parsedNumbers = StringUtils.clampString(parsedNumbers, 30);
+    	
+    	System.out.print("Eingabe erfolgreich als ");
+    	System.out.print(parsedNumbers);
+    	System.out.print(" geparst.\n");
+	}
 }

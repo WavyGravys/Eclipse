@@ -3,8 +3,8 @@ package console.input;
 import java.util.ArrayList;
 
 import console.input.InputSteps.OutputStep;
-import console.output.ProgramMessages;
 import util.ArrayUtils;
+import util.StringUtils;
 
 public class OutputStepImpl<T> implements OutputStep<T>{
 	
@@ -32,7 +32,7 @@ public class OutputStepImpl<T> implements OutputStep<T>{
     		if (Validator.isValidInput(formattedInput, config.validateFunc)) {
 				return (T) config.type.parse(formattedInput);
     		}
-    		ProgramMessages.printError(input, config.error);
+    		printError(input, config.error);
 		}
 	}
 	
@@ -55,11 +55,11 @@ public class OutputStepImpl<T> implements OutputStep<T>{
 	        String[] parts = Parser.getCleanParts(formattedInput);
 
 	        if (!Validator.isAllValid(parts, config.validateFunc)) {
-	        	ProgramMessages.printError(input, config.error);
+	        	printError(input, config.error);
 	        	continue;
 	        }
 	        
-	        ProgramMessages.printParseConfirmation(parts);
+	        Parser.printParseConfirmation(parts);
 	        
 	        inputs = Processor.processInputs(parts, inputs, config.type);
 	        
@@ -75,4 +75,9 @@ public class OutputStepImpl<T> implements OutputStep<T>{
 	    }
 	    return false;
 	}
+    
+    private static void printError(String input, String error) {
+        String clamped = StringUtils.clampString(input, 30);
+        System.out.printf(error, clamped);
+    }
 }

@@ -48,6 +48,4 @@ public class NumberConfigStepImpl<T> implements NumberConfigStep<T>{
 		config.toMatch = match;
 		return new OutputStepImpl<T>(config);
 	}
-
-	
 }

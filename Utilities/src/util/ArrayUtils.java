@@ -16,7 +16,7 @@ public class ArrayUtils {
 		return result;
 	}
 	
-	public static int[] sortInt(int[] array, boolean ascending) {
+	public static int[] bubblesortInt(int[] array, boolean ascending) {
 		
 		Function<Integer, Boolean> isInOrder = index -> {
 			if (ascending) {
@@ -46,6 +46,90 @@ public class ArrayUtils {
 		
 		return array;
 		}
+	
+	public static int[] quicksortInt(int[] array, boolean ascending) {
+		if (ascending) {
+			return quicksortIntAsc(array);
+		} else {
+			return quicksortIntDesc(array);
+		}
+	}
+	
+	public static int[] quicksortIntAsc(int[] array) {
+		System.out.print(ArrayUtils.intToString(array));
+		int pivot = array[array.length / 2];
+		System.out.println(" " + array.length / 2 + " as: " + pivot);
+		if (array.length < 2) { return array; }
+	    
+	    int i = 0;
+	    int j = array.length - 1;
+	    
+	    while (i <= j) {
+	        while (array[i] < pivot) i++;
+	        while (array[j] > pivot) j--;
+	        
+	        if (i <= j) {
+	            int tmp = array[i];
+	            array[i] = array[j];
+	            array[j] = tmp;
+	            i++;
+	            j--;
+	        } else {
+	        	break;
+	        }
+	    }
+	    
+	    if (i < 2 || i > array.length - 2) { 
+	    	System.out.print(ArrayUtils.intToString(array));
+			System.out.println(" " + array.length / 2 + " as: " + pivot);
+	    	return array; }
+	    
+	    int[] leftPart = new int[i];
+		System.arraycopy(array, 0, leftPart, 0, i);
+	    int[] rightPart = new int[array.length - i];
+	    System.arraycopy(array, i, rightPart, 0, array.length-i);
+	    
+	    leftPart = quicksortIntAsc(leftPart);
+	    rightPart = quicksortIntAsc(rightPart);
+	    
+	    return ArrayUtils.appendIntArray(leftPart, rightPart);
+	}
+	
+	public static int[] quicksortIntDesc(int[] array) {
+		if (array.length < 2) { return array; }
+	    
+	    int pivot = array[array.length / 2];
+	    int i = 0;
+	    int j = array.length - 1;
+
+	    while (i <= j) {
+	        while (array[i] > pivot) i++;
+	        while (array[j] < pivot) j--;
+	        
+	        if (i <= j) {
+	            int tmp = array[i];
+	            array[i] = array[j];
+	            array[j] = tmp;
+	            i++;
+	            j--;
+	        } else {
+	        	break;
+	        }
+	    }
+	    
+	    if (i == 0 || i == array.length) { return array; }
+	    
+	    int[] leftPart = new int[i];
+		System.arraycopy(array, 0, leftPart, 0, i);
+	    int[] rightPart = new int[array.length-i];
+	    System.arraycopy(array, i, rightPart, 0, array.length-i);
+	    
+	    leftPart = quicksortIntDesc(leftPart);
+	    rightPart = quicksortIntDesc(rightPart);
+
+	    return ArrayUtils.appendIntArray(leftPart, rightPart);
+	}
+	
 	
 	public static String intToString(int[] array) throws IllegalArgumentException  {
 		if (array.length == 0) {return ""; }
@@ -82,6 +166,12 @@ public class ArrayUtils {
 		}
 	}
 	
+	public static void validateDoubleArray(double[] array) {
+		if (array.length == 0) {
+			throw new IllegalArgumentException("array cannot be empty");
+		}
+	}
+	
 	public static long sumInt(int[] array) throws IllegalArgumentException  {
 		validateIntArray(array);
 		
@@ -92,6 +182,18 @@ public class ArrayUtils {
 	    }
 		
 	    return sum;
+	}
+	
+	public static double sumDouble(double[] array) throws IllegalArgumentException {
+		validateDoubleArray(array);
+		
+		double sum = 0;
+		
+		for (double number : array) {
+			sum += number;
+		}
+		
+		return sum;
 	}
 	
 	public static long sumIntInRange(int[] array, int startIndex, int lastIndex) throws IllegalArgumentException  {
@@ -155,6 +257,14 @@ public class ArrayUtils {
 		return (double) sum / (double) array.length;
 	}
 	
+	public static double avgDouble(double[] array) {
+		validateDoubleArray(array);
+		
+		double sum = sumDouble(array);
+		return sum / (double) array.length;
+	}
+	
+	
 	public static int[] intRange(int n) {
 		int[] array = new int[n];
 		
@@ -164,7 +274,7 @@ public class ArrayUtils {
 		
 		return array;
 	}
-	
+		
 	public static Integer[] integerRange(int n) {
 		Integer[] array = new Integer[n];
 		

@@ -43,7 +43,7 @@ public class MenuLogic {
 			yield mainMenu(numbers);
 		}
 		case 3, 4 -> {
-			numbers = ArrayUtils.sortInt(numbers, choice == 3);
+			numbers = ArrayUtils.quicksortInt(numbers, choice == 3);
 			NumberDisplay.display(numbers);
 			yield mainMenu(numbers);
 		}
@@ -94,7 +94,7 @@ public class MenuLogic {
 	private static void displayResult(String result) {
 		// TODO: add clamping/scientific notation for large numbers.
 		System.out.println(result);
-		Menu.loadingBar(result.length() - 3, 2000, false);
+		Menu.loadingBar(result.length() - 2, 2000, false);
 		System.out.print("\n\n");
 	}
 }

@@ -11,19 +11,23 @@ public class Tankbelege implements Übung { // TODO: gleitender Mittelwert
 	public final String[] explainStrings = new String[] {
 			"In folgendem Programm geben Sie Ihre Tankbelege ein,",
 			"mit welchen anschließend Ihr Durschnittsverbrauch errechnet wird.",
+			"Geben Sie während der Eingabe ein 'X' ein um das Programm zu schließen."
 	};
 	
 	public void start() {
 		ProgramMessages.explainProgram(explainStrings);
      
-		int initialMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
+		Integer initialMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
+		if (initialMileage == null) {return;}
 		tracker.setInitialMileage(initialMileage);
 		
 		System.out.print("\n - Erster Tankbeleg - \n");
 		while (true) {
-			int refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
-			int currentMileage = getInput("Aktueller Kilometerstand: ", 
+			Integer refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
+			if (refuelAmount == null) {return;}
+			Integer currentMileage = getInput("Aktueller Kilometerstand: ", 
 					(double) tracker.getLastMileage(), false);
+			if (currentMileage == null) {return;}
 
         tracker.recordRefueling(refuelAmount, currentMileage);
         
@@ -35,17 +39,18 @@ public class Tankbelege implements Übung { // TODO: gleitender Mittelwert
 		}
 	}
 	
-	private static int getInput(String prompt, double min, boolean minInclusive) {
+	private static Integer getInput(String prompt, double min, boolean minInclusive) {
 		return Input.builder()
 				.typeInteger()
 				.prompt(prompt)
+				.exitConditions("X")
 				.rangeValidation(min, Integer.MAX_VALUE)
 				.inclusivity(minInclusive, false)
 				.get();
 	}
 	
 	private void printAverageConsumption() {
-        StringBuilder sb = new StringBuilder("\nIhr Treibstoffverbrauch ist: ");
+		StringBuilder sb = new StringBuilder("\nIhr Treibstoffverbrauch ist: ");
         sb.append(tracker.getAverageConsumption());
         sb.append(" L/100Km.\n");
         String message = sb.toString();

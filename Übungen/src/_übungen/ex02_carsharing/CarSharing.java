@@ -2,7 +2,9 @@ package _übungen.ex02_carsharing;
 
 import _main.Übung;
 import console.input.Input;
+import console.menu.Menu;
 import console.output.ProgramMessages;
+import math.MathUtils;
 
 public class CarSharing implements Übung {
 	
@@ -14,6 +16,7 @@ public class CarSharing implements Übung {
 	public final String[] explainLines = new String[] {
 			"In folgendem Programm geben Sie Ihre Car Sharing daten ein,",
 			"womit Ihre Kosten für den Nutzen des Autos errechnet werden.",
+			"Geben Sie während der Eingabe ein 'X' ein um das Programm zu schließen."
 	};
 	
 	
@@ -23,11 +26,9 @@ public class CarSharing implements Übung {
 		while (true) {	
 			int[] data = getData();
 			
-			double cost = calculateCost(data);
+			System.out.printf("\nIhr Rechnungsbetrag ist [%f€] \n\n", MathUtils.roundTo(calculateCost(data), 2));
 			
-			System.out.printf("Rechnungsbetrag: %.2f€ \n\n", cost);
-			
-			if (console.menu.Menu.shouldExit()) {
+			if (Menu.shouldExit()) {
 				return;
 			}
 		}
@@ -36,11 +37,20 @@ public class CarSharing implements Übung {
 	private static int[] getData() {
 		int vehicleClassIndex = Input.getMatchingInt("Fahrzeugsklasee: ", VEHICLE_CLASSES);
 		vehicleClassIndex--;
-		int drivenKm = Input.getInt("Gefahrene Kilometer: ");
-		int hoursUsed = Input.getInt("Stunden genutzt: ");
+		int drivenKm = getInput("Gefahrene Kilometer: ");
+		int hoursUsed = getInput("Stunden genutzt: ");
 		
 		return new int[] {vehicleClassIndex,drivenKm,hoursUsed};
 	}
+	
+	private static Integer getInput(String prompt) {
+        return Input.builder()
+        		.typeInteger()
+        		.prompt(prompt)
+        		.exitConditions("x")
+        		.numberValidation()
+        		.get();
+    }
 	
 	private static double calculateCost(int[] data) {
 		double cost = 0;

@@ -10,6 +10,8 @@ import util.TimeUtils;
 
 public class Übungen {
 	
+	//public static final Text text = new Text(Text.Language.DEUTSCH);
+	
 	private static final Übung[] OPTIONS = {
 		    new Tankbelege(),
 		    new CarSharing(),
@@ -22,6 +24,7 @@ public class Übungen {
 	
 	
 	public static void main(String[] args) {
+		
 		String[] menu = createMenuString();
 		Integer[] menuOptions = ArrayUtils.integerRange(OPTIONS.length + 1);
 		
@@ -53,3 +56,4 @@ public class Übungen {
 		return menu;
 	}
 }
+
