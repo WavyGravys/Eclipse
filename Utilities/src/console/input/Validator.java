@@ -5,6 +5,19 @@ import util.ArrayUtils;
 import util.Function;
 
 public class Validator {
+    
+	public static boolean isAllValid(String[] inputs, Function<String, Boolean> validateFunc) {
+    	for (String part : inputs) {
+    		if (!isValidInput(part, validateFunc)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+	
+	public static boolean isValidInput(String input, Function<String, Boolean> validateFunc) {
+		return validateFunc.apply(input);
+	}
 	
 	public static Function<String, Boolean> string() {
 		return s -> { return true; };
@@ -45,7 +58,6 @@ public class Validator {
                 }
                 return false;
             }
-            // else
             Number number;
             try {
                 number = type.parse(input);
@@ -62,26 +74,4 @@ public class Validator {
             return false;
     	};
     }
-    
-    public static boolean isValidInput(String input, Function<String, Boolean> validateFunc) {
-		return validateFunc.apply(input);
-	}
-    
-    public static boolean isAllValid(String[] inputs, Function<String, Boolean> validateFunc) {
-    	for (String part : inputs) {
-    		if (!isValidInput(part, validateFunc)) {
-    			return false;
-    		}
-    	}
-    	return true;
-    }
-    
-    public static String[] getDefaultExitConditions(String[] exitConditions) {
-    	if (exitConditions == null || exitConditions.length == 0) {
-			exitConditions = new String[] {""};
-		} else {
-			exitConditions = ArrayUtils.appendStringArray(exitConditions, new String[] {""});
-		}
-		return exitConditions;
-	}
-    }
+}

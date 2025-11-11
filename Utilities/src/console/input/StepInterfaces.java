@@ -2,7 +2,7 @@ package console.input;
 
 import util.Function;
 
-public class InputSteps {
+public class StepInterfaces {
 	
     public interface TypeStep {
     	StringConfigStep typeString();

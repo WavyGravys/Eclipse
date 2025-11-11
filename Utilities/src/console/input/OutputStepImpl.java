@@ -2,15 +2,15 @@ package console.input;
 
 import java.util.ArrayList;
 
-import console.input.InputSteps.OutputStep;
+import console.input.StepInterfaces.OutputStep;
 import util.ArrayUtils;
 import util.StringUtils;
 
 public class OutputStepImpl<T> implements OutputStep<T>{
 	
-	private final InputConfig config;
+	private final Config config;
 	
-	public OutputStepImpl(InputConfig config) {
+	public OutputStepImpl(Config config) {
         this.config = config;
     }
 	
@@ -27,12 +27,12 @@ public class OutputStepImpl<T> implements OutputStep<T>{
 	        	return null;
 	        }
 			
-    		String formattedInput = InputFormatter.formatInput(input, config);
+    		String formattedInput = Processor.formatInput(input, config);
     		
     		if (Validator.isValidInput(formattedInput, config.validateFunc)) {
 				return (T) config.type.parse(formattedInput);
     		}
-    		printError(input, config.error);
+    		Print.error(input, config.error);
 		}
 	}
 	
@@ -50,16 +50,16 @@ public class OutputStepImpl<T> implements OutputStep<T>{
 	        	return ArrayUtils.toPrimitive(config.type, inputs.toArray((T[]) config.type.newArray(0)));
 	        }
 
-	        String formattedInput = InputFormatter.formatInput(input, config);
+	        String formattedInput = Processor.formatInput(input, config);
 	        
-	        String[] parts = Parser.getCleanParts(formattedInput);
+	        String[] parts = Processor.getCleanParts(formattedInput);
 
 	        if (!Validator.isAllValid(parts, config.validateFunc)) {
-	        	printError(input, config.error);
+	        	Print.error(input, config.error);
 	        	continue;
 	        }
 	        
-	        Parser.printParseConfirmation(parts);
+	        Print.parseConfirmation(parts);
 	        
 	        inputs = Processor.processInputs(parts, inputs, config.type);
 	        
@@ -76,8 +76,19 @@ public class OutputStepImpl<T> implements OutputStep<T>{
 	    return false;
 	}
     
-    private static void printError(String input, String error) {
-        String clamped = StringUtils.clampString(input, 30);
-        System.out.printf(error, clamped);
+    private class Print {
+    	public static void parseConfirmation(String[] parsed) {
+        	String parsedNumbers = ArrayUtils.combineStrings(parsed);
+        	parsedNumbers = StringUtils.clampString(parsedNumbers, 30);
+        	
+        	System.out.print("Eingabe erfolgreich als ");
+        	System.out.print(parsedNumbers);
+        	System.out.print(" geparst.\n");
+    	}
+    	
+    	public static void error(String input, String error) {
+            String clamped = StringUtils.clampString(input, 30);
+            System.out.printf(error, clamped);
+        }
     }
 }

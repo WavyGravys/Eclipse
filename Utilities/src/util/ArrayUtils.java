@@ -16,6 +16,24 @@ public class ArrayUtils {
 		return result;
 	}
 	
+	public static String combineStrings(String[] array) throws IllegalArgumentException {
+		StringBuilder sb = new StringBuilder("[");
+		for (String s : array) {
+			sb.append(s);
+		}
+		
+		return sb.toString();
+	}
+	
+	public static <T> boolean hasAny(T[] array, T[] toCheck) {
+		for (int i = 0; i < array.length; i++) {
+			if (array[i].equals(toCheck[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static int[] bubblesortInt(int[] array, boolean ascending) {
 		
 		Function<Integer, Boolean> isInOrder = index -> {

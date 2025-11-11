@@ -1,6 +1,6 @@
 package console.input;
 
-import console.input.InputSteps.TypeStep;
+import console.input.StepInterfaces.TypeStep;
 
 public class Input {
 	

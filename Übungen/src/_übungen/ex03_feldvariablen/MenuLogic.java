@@ -24,7 +24,8 @@ public class MenuLogic {
 			" 0 - ZURÜCK"
 	};
 	public static enum MenuState {ADD, CONTINUE, EXIT};
-	public MenuState menuState;
+	public MenuState menuState = MenuState.EXIT;
+	// starts at EXIT to avoid NullException crash if used incorrectly
 	
 	
 	public int[] mainMenu(int[] numbers) {
@@ -92,7 +93,8 @@ public class MenuLogic {
 	}
 	
 	private static void displayResult(String result) {
-		// TODO: add clamping/scientific notation for large numbers.
+		// TODO: add clamping/scientific notation for large numbers
+		//		 maybe directly in ArrayUtils
 		System.out.println(result);
 		Menu.loadingBar(result.length() - 2, 2000, false);
 		System.out.print("\n\n");

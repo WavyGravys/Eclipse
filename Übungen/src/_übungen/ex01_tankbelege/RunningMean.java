@@ -2,6 +2,7 @@ package _übungen.ex01_tankbelege;
 
 import util.ArrayUtils;
 
+// wird noch nicht genutzt
 public class RunningMean {
 	
 	double[] lastAverages = new double[5];
