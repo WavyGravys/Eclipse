@@ -1,5 +1,6 @@
 package math;
 
+// wird noch nicht genutzt
 public class Graph {
 	
 	String[] axisNames;
@@ -58,6 +59,16 @@ public class Graph {
 		for (int i = 0; i < size[0]; i++) {
 			System.out.print(i + " ");
 		}
+	}
+}
+
+class Point {
+	int x;
+	int y;
+	
+	Point(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 }
 

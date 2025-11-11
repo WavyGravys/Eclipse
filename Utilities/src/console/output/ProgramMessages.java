@@ -4,7 +4,7 @@ import util.TimeUtils;
 
 public class ProgramMessages {
 	
-	public static void spaces(int n) {
+	public static void ptintSpaces(int n) {
 		System.out.print(" ".repeat(n));
 	}
 	
@@ -36,7 +36,7 @@ public class ProgramMessages {
 			System.out.println();
 			return;
 		}
-			
+		
 		System.out.print("\n\n");
 	}
 	

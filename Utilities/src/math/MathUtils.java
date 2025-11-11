@@ -24,8 +24,6 @@ public class MathUtils {
 		
 	}
 	
-	// built into java.lang.Math
-	/* 
 	public static int clamp(int value, int min, int max) {
 		if (value < min) {
 			return min;
@@ -34,5 +32,4 @@ public class MathUtils {
 		}
 		return value;
 	}
-	*/
 }
