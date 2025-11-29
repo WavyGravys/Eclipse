@@ -8,7 +8,7 @@ import util.ArrayUtils;
 
 public class Feldvariablen implements Übung {
 
-	public final String[] explainStrings = new String[] { 
+	private final String[] explainStrings = new String[] { 
 			"In folgendem Programm geben Sie eine Zahlenfolge ein,",
 			"welche dann schön dargestellt wird,", "und womit Sie rechenoperationen durchführen können.",
 			"Die zahlenreihe kann mit folgenden Zeichen/Zeichenreihen getrennt werden:", 

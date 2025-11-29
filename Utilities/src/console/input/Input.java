@@ -55,6 +55,14 @@ public class Input {
 				.numberValidation()
 				.get();
 	}
+	
+	public static double getDouble(String prompt) {
+		return builder()
+				.typeDouble()
+				.prompt(prompt)
+				.numberValidation()
+				.get();
+	}
 
 	public static int getIntInRange(String prompt, double min, double max) {
 		return builder()

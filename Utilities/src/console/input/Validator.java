@@ -19,7 +19,7 @@ public class Validator {
 	}
 
 	public static Function<String, Boolean> string() {
-		return _ -> { return true; };
+		return s -> { return true; };
 	}
 
 	public static Function<String, Boolean> number(Types numType) {

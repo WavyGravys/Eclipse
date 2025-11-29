@@ -7,6 +7,7 @@ import util.TimeUtils;
 import übungen.ex01_tankbelege.Tankbelege;
 import übungen.ex02_carsharing.CarSharing;
 import übungen.ex03_feldvariablen.Feldvariablen;
+import übungen.ex04_bordcomputer.Bordcomputer;
 
 public class Main {
 
@@ -14,6 +15,7 @@ public class Main {
 			new Tankbelege(), 
 			new CarSharing(), 
 			new Feldvariablen(),
+			new Bordcomputer(),
 
 			/*
 			 * Add new Übungen here. It's Class must implent Übung.

@@ -20,7 +20,6 @@ public class OutputStepImpl<T> implements OutputStep<T> {
 
 		while (true) {
 			System.out.print(config.prompt);
-
 			String input = Reader.readLine();
 
 			if (shouldExit(input, config.exitConditions)) {
@@ -43,7 +42,6 @@ public class OutputStepImpl<T> implements OutputStep<T> {
 
 		while (true) {
 			System.out.print(config.prompt);
-
 			String input = Reader.readLine();
 
 			if (shouldExit(input, config.exitConditions)) {
@@ -51,7 +49,6 @@ public class OutputStepImpl<T> implements OutputStep<T> {
 			}
 
 			String formattedInput = Processor.formatInput(input, config);
-
 			String[] parts = Processor.getCleanParts(formattedInput);
 
 			if (!Validator.isAllValid(parts, config.validateFunc)) {
@@ -60,9 +57,7 @@ public class OutputStepImpl<T> implements OutputStep<T> {
 			}
 
 			Print.parseConfirmation(parts);
-
 			inputs = Processor.processInputs(parts, inputs, config.type);
-
 		}
 	}
 
