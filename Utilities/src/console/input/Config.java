@@ -7,7 +7,7 @@ import util.Types;
 public class Config {
 	Types type;
 	public String prompt = "Eingabe: ";
-	public String error = "ERROR: \"%s\" ist keine valide Eingabe\n";
+	public String error = "ERROR: \"%s\" ist keine valide Eingabe.\n";
 	boolean shouldFormat = false;
 	String delimiter = ", ";
 	String[] exitConditions = new String[] {};
@@ -22,7 +22,7 @@ public class Config {
 		if (exitConditions == null || exitConditions.length == 0) {
 			exitConditions = conditionsToAdd;
 		} else if (!ArrayUtils.hasAny(exitConditions, conditionsToAdd)) {
-			exitConditions = ArrayUtils.appendStringArray(exitConditions, conditionsToAdd);
+			exitConditions = ArrayUtils.appendArray(exitConditions, conditionsToAdd);
 		}
 	}
 }

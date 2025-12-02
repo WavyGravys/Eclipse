@@ -20,79 +20,7 @@ public class Display {
 		printBottomLoadingBar(numbers, config);
 	}
 
-	private static class DisplayConfig {
-		private static int INSIDE_BRACKET_OFFSET = 4;
-		private static int OUTSIDE_BRACKET_OFFSET = 1;
-		private static String DELIMETER = "  ";
-		private static boolean IS_DYNAMIC_SPACING = true;
-		private static boolean IN_LINE_BRACKETS = true;
-
-		private int numColumns = 5;
-		final int[] columnWidths;
-		final int spacing;
-		final int loadingBarDotAmount;
-		final byte fullOffset;
-
-		DisplayConfig(int[] numbers) {
-			this.numColumns = updateNumColumns(numbers);
-			this.columnWidths = calculateColumnWidths(numbers, this.numColumns);
-			this.spacing = calculateSpacing(numbers);
-			this.loadingBarDotAmount = calculateLoadingBarDotAmount(this.numColumns, this.columnWidths, this.spacing);
-			this.fullOffset = calculateFulOffset();
-		}
-
-		private int updateNumColumns(int[] numbers) {
-			if (numbers.length < this.numColumns) {
-				return numbers.length;
-			}
-			return this.numColumns;
-		}
-
-		private static int[] calculateColumnWidths(int[] numbers, int numColumns) {
-			int[] columnWidths = new int[numColumns];
-
-			for (int column = 0; column < numColumns; column++) {
-				columnWidths[column] = 0;
-			}
-
-			for (int index = 0; index < numbers.length; index++) {
-				int collumn = index % numColumns;
-				int numDigits = String.valueOf(numbers[index]).length();
-
-				if (columnWidths[collumn] < numDigits) {
-					columnWidths[collumn] = numDigits;
-				}
-			}
-
-			return columnWidths;
-		}
-
-		private static int calculateSpacing(int[] numbers) {
-			int spacing = 0;
-
-			for (int index = 0; index < numbers.length; index++) {
-				int numDigits = String.valueOf(numbers[index]).length();
-
-				if (spacing < numDigits) {
-					spacing = numDigits;
-				}
-			}
-
-			return spacing;
-		}
-
-		private static byte calculateFulOffset() {
-			return (byte) (INSIDE_BRACKET_OFFSET + OUTSIDE_BRACKET_OFFSET + 1);
-		}
-
-		private static int calculateLoadingBarDotAmount(int numColumns, int[] columnWidths, int spacing) {
-			int allDelimiter = DELIMETER.length() * numColumns;
-			int allSpacing = !IS_DYNAMIC_SPACING ? spacing * numColumns : (int) ArrayUtils.sumInt(columnWidths);
-			int offsetWidth = INSIDE_BRACKET_OFFSET * 2 + OUTSIDE_BRACKET_OFFSET * 2;
-
-			return allDelimiter + allSpacing - DELIMETER.length() + offsetWidth;
-		}
-	}
+	
 
 	private static void printTopLoadingBar(DisplayConfig config) {
 		System.out.println();
@@ -120,11 +48,11 @@ public class Display {
 	}
 
 	private static void printOpeningBracket(DisplayConfig config) {
-		ProgramMessages.ptintSpaces(DisplayConfig.OUTSIDE_BRACKET_OFFSET);
+		ProgramMessages.ptintSpaces(config.OUTSIDE_BRACKET_OFFSET);
 		System.out.print("[");
 
-		if (DisplayConfig.IN_LINE_BRACKETS) {
-			ProgramMessages.ptintSpaces((int) DisplayConfig.INSIDE_BRACKET_OFFSET);
+		if (config.IN_LINE_BRACKETS) {
+			ProgramMessages.ptintSpaces((int) config.INSIDE_BRACKET_OFFSET);
 		} else {
 			System.out.println();
 			ProgramMessages.ptintSpaces(config.fullOffset);
@@ -133,7 +61,7 @@ public class Display {
 
 	private static void printNumberWithSpacing(int number, int columnIndex, DisplayConfig config) {
 		System.out.print(number);
-		System.out.print(DisplayConfig.DELIMETER);
+		System.out.print(config.DELIMETER);
 		if (columnIndex == config.numColumns - 1) {
 			return;
 		}
@@ -144,7 +72,7 @@ public class Display {
 
 	private static int getSpacing(int number, int columnIndex, DisplayConfig config) {
 		int numDigits = Integer.toString(number).length();
-		if (DisplayConfig.IS_DYNAMIC_SPACING) {
+		if (config.IS_DYNAMIC_SPACING) {
 			return config.columnWidths[columnIndex] - numDigits;
 		}
 		return config.spacing - numDigits;
@@ -161,13 +89,13 @@ public class Display {
 	}
 
 	private static void printClosingBracket(int[] numbers, DisplayConfig config) {
-		if (DisplayConfig.IN_LINE_BRACKETS) {
+		if (config.IN_LINE_BRACKETS) {
 			int spacesToEnd = calculateSpacesToEnd(numbers, config);
 			ProgramMessages.ptintSpaces(spacesToEnd);
 			System.out.print("]");
 		} else {
 			System.out.println();
-			ProgramMessages.ptintSpaces(DisplayConfig.OUTSIDE_BRACKET_OFFSET);
+			ProgramMessages.ptintSpaces(config.OUTSIDE_BRACKET_OFFSET);
 			System.out.print("]");
 		}
 	}
@@ -178,15 +106,15 @@ public class Display {
 		int lastNumberLength = Integer.toString(numbers[lastIndex]).length();
 
 		int spacingWidth = calculateSpacingWidth(columnsBeforeLast, config);
-		int delimiterWidth = DisplayConfig.DELIMETER.length() * columnsBeforeLast;
+		int delimiterWidth = config.DELIMETER.length() * columnsBeforeLast;
 		int usedWidth = config.fullOffset + spacingWidth + delimiterWidth + lastNumberLength;
 
-		return config.loadingBarDotAmount - usedWidth + 1 - DisplayConfig.OUTSIDE_BRACKET_OFFSET;
+		return config.loadingBarDotAmount - usedWidth + 1 - config.OUTSIDE_BRACKET_OFFSET;
 	}
 
 	private static int calculateSpacingWidth(int columnCount, DisplayConfig config) {
-		if (DisplayConfig.IS_DYNAMIC_SPACING && columnCount > 1) {
-			return (int) ArrayUtils.sumIntInRange(config.columnWidths, 0, columnCount - 1);
+		if (config.IS_DYNAMIC_SPACING && columnCount > 1) {
+			return (int) ArrayUtils.sumInRange(config.columnWidths, 0, columnCount - 1);
 		}
 		return config.spacing * columnCount;
 	}

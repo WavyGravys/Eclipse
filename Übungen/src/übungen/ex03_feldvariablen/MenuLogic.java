@@ -5,10 +5,14 @@ import math.MathUtils;
 import util.ArrayUtils;
 
 public class MenuLogic {
+	private static final String[] firstMenu = new String[] {
+			"[═══════] Menü [═══════]",
+			" 1 - Zahlen eingeben",
+			" 0 - ZURÜCK" };
 	private static final String[] menu = new String[] { 
 			"[═══════] Menü [═══════]", 
 			" 1 - Zahlen hinzufügen",
-			" 2 - Zahlen anzeigen", 
+			" 2 - Zahlen anzeigen",
 			" 3 - Zahlen sortieren (ansteigend)", 
 			" 4 - Zahlen sortieren (absteigend)",
 			" 5 - Mathe Operationen", 
@@ -29,7 +33,15 @@ public class MenuLogic {
 
 	public MenuState menuState = MenuState.EXIT;
 	// starts at EXIT to avoid NullException crash if used incorrectly
-
+	
+	public int firstMenu() {
+		int choice = Menu.basic(firstMenu, ArrayUtils.integerRange(2));
+		if (choice == 1) {
+			menuState = MenuState.ADD;
+		}
+		return choice;
+	}
+	
 	public int[] mainMenu(int[] numbers) {
 		int choice = getChoice(menu, 7);
 		return switch (choice) {
@@ -46,7 +58,7 @@ public class MenuLogic {
 			yield mainMenu(numbers);
 		}
 		case 3, 4 -> {
-			numbers = ArrayUtils.quicksortInt(numbers, choice == 3);
+			numbers = ArrayUtils.quicksort(numbers, choice == 3);
 			Display.display(numbers);
 			yield mainMenu(numbers);
 		}
@@ -56,7 +68,7 @@ public class MenuLogic {
 		case 6 -> {
 			menuState = MenuState.CONTINUE;
 			Display.string("Zahlen wurden gelöscht.");
-			yield mainMenu(numbers);
+			yield new int[0];
 		}
 		default -> {
 			throw new IllegalArgumentException("Unexpected value: " + choice);
@@ -83,11 +95,11 @@ public class MenuLogic {
 	private static String calculateChoice(int choice, int[] numbers) {
 		String base = "Ihrer eingegebenen Zahlen ist [";
 		String result = switch (choice) {
-		case 1 -> ("Die Summe" + base + ArrayUtils.sumInt(numbers));
-		case 2 -> ("Das Produkt" + base + ArrayUtils.prodInt(numbers));
-		case 3 -> ("Das Minimum" + base + ArrayUtils.minInt(numbers));
-		case 4 -> ("Das Maximum" + base + ArrayUtils.maxInt(numbers));
-		case 5 -> ("Der Durschschnitt" + base + (MathUtils.roundTo(ArrayUtils.avgInt(numbers), 2)));
+		case 1 -> ("Die Summe" + base + ArrayUtils.sum(numbers));
+		case 2 -> ("Das Produkt" + base + ArrayUtils.prod(numbers));
+		case 3 -> ("Das Minimum" + base + ArrayUtils.min(numbers));
+		case 4 -> ("Das Maximum" + base + ArrayUtils.max(numbers));
+		case 5 -> ("Der Durschschnitt" + base + (MathUtils.roundTo(ArrayUtils.avg(numbers), 2)));
 		default -> throw new IllegalArgumentException("Unexpected value: " + choice);
 		};
 

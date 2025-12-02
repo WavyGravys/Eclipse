@@ -17,7 +17,42 @@ public class Bordcomputer implements Übung {
 			" 1 – Fahren",
 			" 2 – Tanken",
 			" 3 – Daten anzeigen",
+			" 4 - Neues Auto",
 			" 0 - Zurück" };
+	
+	public void start() {
+		PKW auto = new PKW();
+		
+		ProgramMessages.explainProgram(explainStrings);
+		
+		while(true) {
+			int choice = Menu.basic(menu, ArrayUtils.integerRange(5));
+			switch (choice) {
+			case 0:
+				return;
+			case 1:
+				int kmToDrive = Input.getInt("zu fahrende Kilometer: ");
+				int kmDriven = auto.drive(kmToDrive);
+				if (kmDriven < kmToDrive) {
+					System.out.println("Der treibstoff war nicht genügend für die volle Fahrt.");
+				}
+				System.out.printf("Sie sind %d Km gefahren! \n", kmDriven);
+				break;
+			case 2:
+				double refuelAmount = Input.getDouble("zu tankende Menge in Litern: ");
+				double fuelLevel = auto.refuel(refuelAmount);
+				System.out.printf("Sie haben %.2f Liter getankt! und liegen nun bei %.2f L.\n", refuelAmount, fuelLevel);
+				break;
+			case 3:
+				displayData(auto.getData());
+				break;
+			case 4:
+				auto = new PKW();
+			}
+			
+			System.out.println();
+		}
+	}
 	
 	private static void displayData(double[] data) {
 		final String[] displayStrings = new String[] {
@@ -29,38 +64,6 @@ public class Bordcomputer implements Übung {
 		int i = 0;
 		for (double elem : data) {
 			System.out.printf(displayStrings[i++], elem);
-			System.out.println();
-		}
-	}
-	
-	public void start() {
-		PKW herbie = new PKW();
-		
-		ProgramMessages.explainProgram(explainStrings);
-		
-		while(true) {
-			int choice = Menu.basic(menu, ArrayUtils.integerRange(4));
-			switch (choice) {
-			case 0:
-				return;
-			case 1:
-				int kmToDrive = Input.getInt("zu fahrende Kilometer: ");
-				int kmDriven = herbie.drive(kmToDrive);
-				if (kmDriven < kmToDrive) {
-					System.out.println("Der treibstoff war nicht für die volle Fahrt genügend.");
-				}
-				System.out.printf("Sie sind %d Km gefahren! \n", kmDriven);
-				break;
-			case 2:
-				double refuelAmount = Input.getDouble("zu tankende Menge in Litern: ");
-				double fuelLevel = herbie.refuel(refuelAmount);
-				System.out.printf("Sie haben %.2f Liter getankt! und liegen nun bei %.2f L.\n", refuelAmount, fuelLevel);
-				break;
-			case 3:
-				displayData(herbie.getData());
-				break;
-			}
-			
 			System.out.println();
 		}
 	}

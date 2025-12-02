@@ -4,8 +4,10 @@ package main;
 import java.awt.*;
 import javax.swing.*;
 
+import console.output.ProgramMessages;
 import math.Graph;
 import util.ArrayUtils;
+import file.Saver;
 
 //import java.util.Scanner;
 
@@ -13,11 +15,12 @@ import util.ArrayUtils;
 public class Testing {
 	
 	public static void main(String[] args) {
-		int[] arr = new int[] {3, 2, 9, 8, 1, 0, 3, 5, 0};
-		arr = ArrayUtils.quicksortInt(arr, true);
-		for (int num : arr) {
-			System.out.print(num + ", ");
-		}
+		Saver saver = new Saver("test");
+		String[] data = new String[] {"hi", "hello"};
+		
+		saver.writeSaveFile(data);
+		
+		System.out.println(saver.readSaveFile()[0]);
 	}
 }
 

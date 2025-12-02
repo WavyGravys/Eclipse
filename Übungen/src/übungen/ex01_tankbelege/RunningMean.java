@@ -22,6 +22,6 @@ public class RunningMean {
 	}
 
 	public double getRunningMean() {
-		return ArrayUtils.avgDouble(lastAverages);
+		return ArrayUtils.avg(lastAverages);
 	}
 }

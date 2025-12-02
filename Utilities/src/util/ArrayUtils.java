@@ -2,14 +2,14 @@ package util;
 
 public class ArrayUtils {
 
-	public static int[] appendIntArray(int[] arr1, int[] arr2) {
+	public static int[] appendArray(int[] arr1, int[] arr2) {
 		int[] result = new int[arr1.length + arr2.length];
 		System.arraycopy(arr1, 0, result, 0, arr1.length);
 		System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
 		return result;
 	}
 
-	public static String[] appendStringArray(String[] arr1, String[] arr2) {
+	public static String[] appendArray(String[] arr1, String[] arr2) {
 		String[] result = new String[arr1.length + arr2.length];
 		System.arraycopy(arr1, 0, result, 0, arr1.length);
 		System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
@@ -19,6 +19,7 @@ public class ArrayUtils {
 	public static String toStringClamped(Object[] array, int length) throws IllegalArgumentException {
 		StringBuilder sb = new StringBuilder("[");
 		int lastIndex = array.length - 1;
+		
 		for (int i = 0; i < lastIndex; i++) {
 			sb.append(array[i]);
 			sb.append(", ");
@@ -39,7 +40,7 @@ public class ArrayUtils {
 		return false;
 	}
 
-	public static int[] bubblesortInt(int[] array, boolean ascending) {
+	public static int[] bubblesort(int[] array, boolean ascending) {
 
 		Function<Integer, Boolean> isInOrder = index -> {
 			if (ascending) {
@@ -71,15 +72,15 @@ public class ArrayUtils {
 		return array;
 	}
 
-	public static int[] quicksortInt(int[] array, boolean ascending) {
+	public static int[] quicksort(int[] array, boolean ascending) {
 		if (ascending) {
-			return quicksortIntAsc(array);
+			return quicksortAsc(array);
 		} else {
-			return quicksortIntDesc(array);
+			return quicksortDesc(array);
 		}
 	}
 
-	public static int[] quicksortIntAsc(int[] array) {
+	public static int[] quicksortAsc(int[] array) {
 		int pivot = array[array.length / 2];
 		if (array.length < 2) {
 			return array;
@@ -114,13 +115,13 @@ public class ArrayUtils {
 		int[] rightPart = new int[array.length - i];
 		System.arraycopy(array, i, rightPart, 0, array.length - i);
 
-		leftPart = quicksortIntAsc(leftPart);
-		rightPart = quicksortIntAsc(rightPart);
+		leftPart = quicksortAsc(leftPart);
+		rightPart = quicksortAsc(rightPart);
 
-		return ArrayUtils.appendIntArray(leftPart, rightPart);
+		return ArrayUtils.appendArray(leftPart, rightPart);
 	}
 
-	public static int[] quicksortIntDesc(int[] array) {
+	public static int[] quicksortDesc(int[] array) {
 		if (array.length < 2) {
 			return array;
 		}
@@ -155,13 +156,13 @@ public class ArrayUtils {
 		int[] rightPart = new int[array.length - i];
 		System.arraycopy(array, i, rightPart, 0, array.length - i);
 
-		leftPart = quicksortIntDesc(leftPart);
-		rightPart = quicksortIntDesc(rightPart);
+		leftPart = quicksortDesc(leftPart);
+		rightPart = quicksortDesc(rightPart);
 
-		return ArrayUtils.appendIntArray(leftPart, rightPart);
+		return ArrayUtils.appendArray(leftPart, rightPart);
 	}
 
-	public static String intToString(int[] array) throws IllegalArgumentException {
+	public static String toString(int[] array) throws IllegalArgumentException {
 		if (array.length == 0) {
 			return "";
 		}
@@ -177,6 +178,26 @@ public class ArrayUtils {
 
 		return sb.toString();
 	}
+	
+	public static String[] toStringArray(int[] array) {
+		String[] strings = new String[array.length];
+		
+		for (int i = 0; i < array.length; i++) {
+			strings[i] = Integer.toString(array[i]);
+		}
+		
+		return strings;
+	}
+	
+	public static int[] toIntArray(String[] array) {
+		int[] ints = new int[array.length];
+		
+		for (int i = 0; i < array.length; i++) {
+			ints[i] = Integer.parseInt(array[i]);
+		}
+		
+		return ints;
+	}
 
 	public static void validateIntArray(int[] array) {
 		if (array.length == 0) {
@@ -190,7 +211,7 @@ public class ArrayUtils {
 		}
 	}
 
-	public static long sumInt(int[] array) throws IllegalArgumentException {
+	public static long sum(int[] array) throws IllegalArgumentException {
 		validateIntArray(array);
 
 		long sum = 0;
@@ -202,7 +223,7 @@ public class ArrayUtils {
 		return sum;
 	}
 
-	public static double sumDouble(double[] array) throws IllegalArgumentException {
+	public static double sum(double[] array) throws IllegalArgumentException {
 		validateDoubleArray(array);
 
 		double sum = 0;
@@ -214,7 +235,7 @@ public class ArrayUtils {
 		return sum;
 	}
 
-	public static long sumIntInRange(int[] array, int startIndex, int lastIndex) throws IllegalArgumentException {
+	public static long sumInRange(int[] array, int startIndex, int lastIndex) throws IllegalArgumentException {
 		validateIntArray(array);
 
 		long sum = 0;
@@ -226,7 +247,7 @@ public class ArrayUtils {
 		return sum;
 	}
 
-	public static long prodInt(int[] array) throws IllegalArgumentException {
+	public static long prod(int[] array) throws IllegalArgumentException {
 		validateIntArray(array);
 
 		long prod = 1;
@@ -238,47 +259,49 @@ public class ArrayUtils {
 		return prod;
 	}
 
-	public static int minInt(int[] array) throws IllegalArgumentException {
+	public static int min(int[] array) throws IllegalArgumentException {
 		validateIntArray(array);
 
-		int smallestNumber = Integer.MAX_VALUE;
+		int min = array[0];
 
-		for (int number : array) {
-			if (number < smallestNumber) {
-				smallestNumber = number;
+		for (int i = 1; i < array.length; i++) {
+			int numAtIndex = array[i];
+			
+			if (numAtIndex < min) {
+				min = numAtIndex;
 			}
 		}
 
-		return smallestNumber;
+		return min;
 	}
 
-	public static int maxInt(int[] array) throws IllegalArgumentException {
+	public static int max(int[] array) throws IllegalArgumentException {
 		validateIntArray(array);
 
-		int biggestNumber = Integer.MIN_VALUE;
+		int max = array[0];
 
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 1; i < array.length; i++) {
 			int numAtIndex = array[i];
 
-			if (numAtIndex > biggestNumber) {
-				biggestNumber = numAtIndex;
+			if (numAtIndex > max) {
+				max = numAtIndex;
 			}
 		}
 
-		return biggestNumber;
+		return max;
 	}
 
-	public static double avgInt(int[] array) throws IllegalArgumentException {
+	public static double avg(int[] array) throws IllegalArgumentException {
 		validateIntArray(array);
 
-		long sum = sumInt(array);
+		long sum = sum(array);
 		return (double) sum / (double) array.length;
 	}
 
-	public static double avgDouble(double[] array) {
+	public static double avg(double[] array) {
 		validateDoubleArray(array);
 
-		double sum = sumDouble(array);
+		double sum = sum(array);
 		return sum / (double) array.length;
 	}
 
