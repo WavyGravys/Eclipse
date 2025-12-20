@@ -28,7 +28,7 @@ public class MenuLogic {
 			" 0 - ZURÜCK" };
 
 	public static enum MenuState {
-		ADD, CONTINUE, EXIT
+		ADD, FIRST, EXIT
 	};
 
 	public MenuState menuState = MenuState.EXIT;
@@ -66,7 +66,7 @@ public class MenuLogic {
 			yield mathMenu(numbers);
 		}
 		case 6 -> {
-			menuState = MenuState.CONTINUE;
+			menuState = MenuState.FIRST;
 			Display.string("Zahlen wurden gelöscht.");
 			yield new int[0];
 		}

@@ -35,7 +35,13 @@ public class Fahrzeug {
 	}
 	
 	public double[] getData() {
-		return new double[] {(double) this.mileage, this.fuelLevel, this.fuelCapacity, this.consumptionPer100km};
+		return new double[] {
+				(double) this.mileage, 
+				this.fuelLevel, 
+				this.fuelCapacity, 
+				this.consumptionPer100km, 
+				this.fuelLevel * 100 / this.consumptionPer100km
+				};
 	}
 	
 	public int drive (int kmDriven) {

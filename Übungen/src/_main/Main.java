@@ -27,7 +27,7 @@ public class Main {
 		Integer[] menuOptions = ArrayUtils.integerRange(OPTIONS.length + 1);
 
 		TimeUtils.sleep(200); // to reduce the lag on startup
-
+		
 		while (true) {
 			int menuChoice = Menu.basic(menu, menuOptions);
 

@@ -4,7 +4,7 @@ import util.TimeUtils;
 
 public class ProgramMessages {
 	
-	public static void ptintSpaces(int n) {
+	public static void printSpaces(int n) {
 		System.out.print(" ".repeat(n));
 	}
 	
@@ -43,6 +43,5 @@ public class ProgramMessages {
 	public static void closeProgram() {
 		System.out.print("Programm wird geschlossen");
 		ConsoleAnimations.type(" . . .", 150, 150, true);
-		System.exit(0);
 	}
 }

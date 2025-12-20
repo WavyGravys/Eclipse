@@ -1,87 +1,117 @@
 package file;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Saver {
 	private String path;
+	private File saveFile;
 	private FileReader reader;
 	private FileWriter writer;
 	private BufferedReader bufferedReader;
 	private BufferedWriter bufferedWriter;
 	
 	public Saver(String name) {
-		path = getPath(name);
+		path = "saves\\" + name + "_save.txt";
 		try {
+			// tries creating "saves" directory
 			new File("saves").mkdir();
-			File saveFile = new File(path);
+			// tries creating save_name.txt file
+			saveFile = new File(path);
 			saveFile.createNewFile();
-		} catch (Exception e) {
+		
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 	
-	private String getPath(String name) {
-		return "saves\\" + name + "_save.txt";
-	}
-	
-	public boolean saveFileEmpty() {
-		File file = new File(this.path);
-		return file.length() == 0;
-	}
 	
 	public String[] readSaveFile() {
 		try {
-			reader = new FileReader(path);
-			bufferedReader = new BufferedReader(reader);
-			
-			int lines = (int) Files.lines(Paths.get(path)).count();
-	        String[] data = new String[lines];
-	        
-	        int i = 0;
-	        String line;
-	        while ((line = bufferedReader.readLine()) != null) {
-	            data[i++] = line;
-	        }
-	        
-	        bufferedReader.close();
-	        reader.close();
+	        String[] data = readData();
 	        
 	        if (data.length == 0) {
-	        	return null;
+	        	throw new IOException("no data was read.");
 	        }
 	        return data;
-	    }  catch (Exception e) {
+	        
+	    }  catch (IOException e) {
 	    	e.printStackTrace();
 	    	return null;
 	    }
 	}
-
+	
+	private String[] readData() throws IOException {
+		int lineCount = (int) Files.lines(Paths.get(path)).count();
+		String[] data = new String[lineCount]; 
+		
+		openReader();
+		
+		int i = 0;
+	    	String line;
+	        while ((line = bufferedReader.readLine()) != null) {
+	        	data[i++] = line;
+	        }
+		
+		closeReader();
+		
+		return data;
+	}
+	
+	private void openReader() throws IOException {
+		reader = new FileReader(path);
+		bufferedReader = new BufferedReader(reader);
+	}
+	
+	private void closeReader() throws IOException {
+		bufferedReader.close();
+        reader.close();
+	}
+	
+	
 	public void writeSaveFile(String[] data) {
 		try {
-			writer = new FileWriter(path, false);
-			bufferedWriter = new BufferedWriter(writer);
-			
 			if (data.length == 0) {
-				return;
+				throw new Exception("no data was saved.");
 			}
 			
-			for (int i = 0; i < data.length - 1; i++) {
-	        	bufferedWriter.write(data[i]);
-	        	bufferedWriter.newLine();
-	        }
-	        bufferedWriter.write(data[data.length - 1]);
-	        
-	        bufferedWriter.close();
-			writer.close();
-	    } catch (Exception e) {
+			writeData(data);
+	    
+		} catch (Exception e) {
 	    	e.printStackTrace();	
 	    }
+	}
+	
+	private void writeData(String[] data) throws IOException{
+		openWriter();
+		
+		for (int i = 0; i < data.length - 1; i++) {
+        	bufferedWriter.write(data[i]);
+        	bufferedWriter.newLine();
+        }
+        bufferedWriter.write(data[data.length - 1]);
+        
+        closeWriter();
+	}
+	
+	private void openWriter() throws IOException {
+		writer = new FileWriter(path, false);
+		bufferedWriter = new BufferedWriter(writer);
+	}
+	
+	private void closeWriter() throws IOException {
+		bufferedWriter.close();
+		writer.close();
+	}
+	
+	
+	public boolean isSaveFileEmpty() {
+		return saveFile.length() == 0;
 	}
 }

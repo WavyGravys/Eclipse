@@ -14,9 +14,9 @@ public class Bordcomputer implements Übung {
 	
 	private final String[] menu = new String[] {
 			"[═══════] Menü [═══════]",
-			" 1 – Fahren",
-			" 2 – Tanken",
-			" 3 – Daten anzeigen",
+			" 1 - Fahren",
+			" 2 - Tanken",
+			" 3 - Daten anzeigen",
 			" 4 - Neues Auto",
 			" 0 - Zurück" };
 	
@@ -26,7 +26,7 @@ public class Bordcomputer implements Übung {
 		ProgramMessages.explainProgram(explainStrings);
 		
 		while(true) {
-			int choice = Menu.basic(menu, ArrayUtils.integerRange(5));
+			byte choice = (byte) Menu.basic(menu, ArrayUtils.integerRange(5));
 			switch (choice) {
 			case 0:
 				return;
@@ -59,12 +59,19 @@ public class Bordcomputer implements Übung {
 				"Der Kilometerstand liegt bei %.0f Km.",
 				"Der Tankinhalt liegt bei %.2f L.",
 				"Der Tankvolumen ist %.2f L.",
-				"Der Durchschnittsverbrauch liegt bei %.2f L/100Km." };
+				"Der Durchschnittsverbrauch liegt bei %.2f L/100Km.", 
+				"Die Reichweite liegt bei %.2f Km" };
 		
+		int maxLineLength = 0;
 		int i = 0;
 		for (double elem : data) {
-			System.out.printf(displayStrings[i++], elem);
-			System.out.println();
+			String line = displayStrings[i++].formatted(elem);
+			int lineLength = line.length();
+			maxLineLength = lineLength > maxLineLength ? lineLength : maxLineLength;
+			System.out.println(line);
 		}
+		
+		Menu.loadingBar(maxLineLength - 2, 3000, false);
+		System.out.println();
 	}
 }

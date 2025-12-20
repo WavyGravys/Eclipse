@@ -23,7 +23,6 @@ public class Display {
 	
 
 	private static void printTopLoadingBar(DisplayConfig config) {
-		System.out.println();
 		Menu.loadingBar(config.loadingBarDotAmount, 400, false);
 		System.out.println();
 	}
@@ -43,19 +42,19 @@ public class Display {
 	private static void printLineBreak(int index, int columnIndex, DisplayConfig config) {
 		if (columnIndex == 0 && index != 0) {
 			System.out.println();
-			ProgramMessages.ptintSpaces(config.fullOffset);
+			ProgramMessages.printSpaces(config.fullOffset);
 		}
 	}
 
 	private static void printOpeningBracket(DisplayConfig config) {
-		ProgramMessages.ptintSpaces(config.OUTSIDE_BRACKET_OFFSET);
+		ProgramMessages.printSpaces(config.OUTSIDE_BRACKET_OFFSET);
 		System.out.print("[");
 
 		if (config.IN_LINE_BRACKETS) {
-			ProgramMessages.ptintSpaces((int) config.INSIDE_BRACKET_OFFSET);
+			ProgramMessages.printSpaces((int) config.INSIDE_BRACKET_OFFSET);
 		} else {
 			System.out.println();
-			ProgramMessages.ptintSpaces(config.fullOffset);
+			ProgramMessages.printSpaces(config.fullOffset);
 		}
 	}
 
@@ -67,7 +66,7 @@ public class Display {
 		}
 
 		int spacesNeeded = getSpacing(number, columnIndex, config);
-		ProgramMessages.ptintSpaces(spacesNeeded);
+		ProgramMessages.printSpaces(spacesNeeded);
 	}
 
 	private static int getSpacing(int number, int columnIndex, DisplayConfig config) {
@@ -81,7 +80,7 @@ public class Display {
 	private static void printLastNumber(int[] numbers, DisplayConfig config) {
 		if (numbers.length % config.numColumns == 1) {
 			System.out.println();
-			ProgramMessages.ptintSpaces(config.fullOffset);
+			ProgramMessages.printSpaces(config.fullOffset);
 		}
 
 		System.out.print(numbers[numbers.length - 1]);
@@ -91,11 +90,11 @@ public class Display {
 	private static void printClosingBracket(int[] numbers, DisplayConfig config) {
 		if (config.IN_LINE_BRACKETS) {
 			int spacesToEnd = calculateSpacesToEnd(numbers, config);
-			ProgramMessages.ptintSpaces(spacesToEnd);
+			ProgramMessages.printSpaces(spacesToEnd);
 			System.out.print("]");
 		} else {
 			System.out.println();
-			ProgramMessages.ptintSpaces(config.OUTSIDE_BRACKET_OFFSET);
+			ProgramMessages.printSpaces(config.OUTSIDE_BRACKET_OFFSET);
 			System.out.print("]");
 		}
 	}

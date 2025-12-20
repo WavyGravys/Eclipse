@@ -2,9 +2,9 @@ package übungen.ex03_feldvariablen;
 
 import _main.Übung;
 import console.input.Input;
-import console.menu.Menu;
 import console.output.ProgramMessages;
 import util.ArrayUtils;
+import util.Program;
 import file.Saver;
 
 public class Feldvariablen implements Übung {
@@ -24,65 +24,61 @@ public class Feldvariablen implements Übung {
 		MenuLogic menu = new MenuLogic();
 		Saver saver = new Saver("feldvariablen");
 		
-		ProgramMessages.explainProgram(explainStrings);
+		if (saver.isSaveFileEmpty()) {
+			ProgramMessages.explainProgram(explainStrings);
+		}
 		
+		// get save and set menuState
 		int[] numbers;
-		
-		if (!saver.saveFileEmpty()) {
-			numbers = ArrayUtils.toIntArray(saver.readSaveFile());
-			
-			numbers = menu.mainMenu(numbers);
-			if (menu.menuState == MenuLogic.MenuState.EXIT) {
-				save(saver, numbers);
-				return;
-			}
-		} else {
+		if (saver.isSaveFileEmpty()) {
 			numbers = new int[0];
-			if (menu.firstMenu() == 0) {
-				save(saver, numbers);
-				return;
-			}
-			
+			menu.menuState = MenuLogic.MenuState.FIRST;
+		} else {
+			numbers = ArrayUtils.toIntArray(saver.readSaveFile());
+			menu.menuState = MenuLogic.MenuState.ADD;
 		}
 		
 		while (true) {
-
+			// menus
+			if (menu.menuState == MenuLogic.MenuState.ADD) {
+				numbers = menu.mainMenu(numbers);
+				if (menu.menuState == MenuLogic.MenuState.EXIT) {
+					save(saver, numbers);
+					return;
+				}
+			} else if (menu.menuState == MenuLogic.MenuState.FIRST) { // if menu state is FIRST
+				if (menu.firstMenu() == 0) {
+					return;
+				}
+			} else {
+				System.out.println("ERROR: feldvariablen; MenuLogic; menuState - wurde falsch gesetzt");
+				Program.close();
+			}
+			
+			// when we get here, we assume, that we want to get number input
 			if (menu.menuState == MenuLogic.MenuState.ADD) {
 				numbers = ArrayUtils.appendArray(numbers, getNumbers());
 			} else {
-				if (menu.firstMenu() == 0) {
-					save(saver, numbers);
-					return;
-				}
 				numbers = getNumbers();
 			}
-
+			
+			// check if numbers are present to display
 			if (numbers.length == 0 || numbers == null) {
 				System.out.print("[ ¯\\_(ツ)_/¯ ]\n\n");
-
-				if (Menu.shouldExit()) {
-					save(saver, numbers);
-					return;
-				}
-				continue;
-			}
-			
-			Display.display(numbers);
-
-			numbers = menu.mainMenu(numbers);
-			if (menu.menuState == MenuLogic.MenuState.EXIT) {
+			} else {
 				save(saver, numbers);
-				return;
+				Display.display(numbers);
 			}
 		}
 	}
 
 	private static int[] getNumbers() {
-		return (int[]) Input.builder().
-				typeInteger().
-				stopOnEmptyLine().
-				numberValidation().
-				getMult();
+		return (int[]) Input.builder()
+				.typeInteger()
+				.stopOnEmptyLine()
+				.exitConditions("X")
+				.numberValidation()
+				.getMult();
 	}
 	
 	private static void save(Saver saver, int[] numbers) {
