@@ -10,21 +10,21 @@ public class MenuLogic {
 			" 1 - Zahlen eingeben",
 			" 0 - ZURÜCK" };
 	private static final String[] menu = new String[] { 
-			"[═══════] Menü [═══════]", 
+			"[═══════] Menü [═══════]",
 			" 1 - Zahlen hinzufügen",
 			" 2 - Zahlen anzeigen",
 			" 3 - Zahlen sortieren (ansteigend)", 
 			" 4 - Zahlen sortieren (absteigend)",
-			" 5 - Mathe Operationen", 
-			" 6 - Zahlen löschen", 
+			" 5 - Mathe Operationen",
+			" 6 - Zahlen löschen",
 			" 0 - ZURÜCK" };
 	private static final String[] mathMenu = new String[] { 
-			"[═════] Arraymenü [═════]", 
-			" 1 - Summe", 
+			"[═════] Arraymenü [═════]",
+			" 1 - Summe",
 			" 2 - Produkt",
-			" 3 - Minimum", 
-			" 4 - Maximum", 
-			" 5 - Durschnitt", 
+			" 3 - Minimum",
+			" 4 - Maximum",
+			" 5 - Durschnitt",
 			" 0 - ZURÜCK" };
 
 	public static enum MenuState {
