@@ -13,7 +13,6 @@ public class Bordcomputer implements Übung {
 			"Sie starten mit einem vollen Tank." };
 	
 	private final String[] menu = new String[] {
-			"[═══════] Menü [═══════]",
 			" 1 - Fahren",
 			" 2 - Tanken",
 			" 3 - Daten anzeigen",

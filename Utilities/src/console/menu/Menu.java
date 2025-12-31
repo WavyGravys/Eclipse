@@ -9,17 +9,27 @@ public class Menu {
 	}
 
 	public static boolean shouldExit() {
-		int choice = builder().show();
+		int choice = builder().get();
 		return choice == 0;
 	}
 
-	public static int basic(String[] menu, Integer[] options) {
-		return builder().
-				menu(menu).
-				options(options).
-				show();
+	public static int basic(String[] menu, String header, Integer[] options) {
+		return builder()
+				.header(header)
+				.menu(menu)
+				.options(options)
+				.get();
 	}
-
+	
+	public static int basic(String[] menu, Integer[] options) {
+		return builder()
+				.header("- Menü -")
+				.menu(menu)
+				.options(options)
+				.get();
+	}
+	
+	
 	public static void loadingBar(int dotAmount, int loadTime, boolean shouldPrintSkipping) {
 		Display.loadingBar(dotAmount, loadTime, shouldPrintSkipping);
 		Input.clearScannerCache();

@@ -6,11 +6,9 @@ import util.ArrayUtils;
 
 public class MenuLogic {
 	private static final String[] firstMenu = new String[] {
-			"[═══════] Menü [═══════]",
 			" 1 - Zahlen eingeben",
 			" 0 - ZURÜCK" };
-	private static final String[] menu = new String[] { 
-			"[═══════] Menü [═══════]",
+	private static final String[] menu = new String[] {
 			" 1 - Zahlen hinzufügen",
 			" 2 - Zahlen anzeigen",
 			" 3 - Zahlen sortieren (ansteigend)", 
@@ -18,8 +16,7 @@ public class MenuLogic {
 			" 5 - Mathe Operationen",
 			" 6 - Zahlen löschen",
 			" 0 - ZURÜCK" };
-	private static final String[] mathMenu = new String[] { 
-			"[═════] Arraymenü [═════]",
+	private static final String[] mathMenu = new String[] {
 			" 1 - Summe",
 			" 2 - Produkt",
 			" 3 - Minimum",
@@ -77,7 +74,7 @@ public class MenuLogic {
 	}
 
 	private int[] mathMenu(int[] numbers) {
-		int choice = getChoice(mathMenu, 6);
+		int choice = getChoice(mathMenu, "- Arraymenü -", 6);
 		if (choice == 0) {
 			return mainMenu(numbers);
 		}
@@ -88,8 +85,12 @@ public class MenuLogic {
 		return mathMenu(numbers);
 	}
 
+	private static int getChoice(String[] menuStrings, String header, int options) {
+		return Menu.basic(menuStrings, header, ArrayUtils.integerRange(options));
+	}
+	
 	private static int getChoice(String[] menuStrings, int options) {
-		return Menu.basic(menuStrings, ArrayUtils.integerRange(options));
+		return Menu.basic(menuStrings, "- Menü -", ArrayUtils.integerRange(options));
 	}
 
 	private static String calculateChoice(int choice, int[] numbers) {

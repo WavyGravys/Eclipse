@@ -1,9 +1,14 @@
 package console.menu;
 
 public class Builder {
-
+	
 	private final Config config = new Config();
-
+	
+	public Builder header(String header) {
+		config.header = new String[] {header};
+		return this;
+	}
+	
 	public Builder menu(String[] menuStrings) {
 		config.menuStrings = menuStrings;
 		return this;
@@ -29,18 +34,8 @@ public class Builder {
 		return this;
 	}
 
-	public Builder typeDelay(int typeDelay) {
-		config.typeDelay = typeDelay;
-		return this;
-	}
-
-	public Builder lineDelay(int lineDelay) {
-		config.lineDelay = lineDelay;
-		return this;
-	}
-
-	public int show() {
-		Display.displayMenu(config);
+	public int get() {
+		Display.menu(config);
 		int choice = Menu.getSelection(config);
 		System.out.println();
 		return choice;

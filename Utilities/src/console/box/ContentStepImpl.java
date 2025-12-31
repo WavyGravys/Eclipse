@@ -1,29 +1,43 @@
 package console.box;
 
-import console.box.OutputStepImpl.Type;
+import java.util.ArrayList;
+
+import console.box.Box.Type;
 import console.box.StepInterfaces.ContentStep;
 import console.box.StepInterfaces.OutputStep;
 
 public class ContentStepImpl implements ContentStep{
 	
-	@SuppressWarnings("unused")
-	private String[][] content;
+	private ArrayList<String[]> sections;
+	private ArrayList<Boolean> centered;
 	private Type type;
 	
-	ContentStepImpl(String[][] content, Type type) { // [sections][lines]
-		this.content = content;
+	ContentStepImpl(ArrayList<String[]> sections, ArrayList<Boolean> centered, Type type) { // [sections][lines]
+		this.sections = sections;
+		this.centered = centered;
 		this.type = type;
 	}
 	
 	@Override
-	public OutputStep newSections(String[][] content, boolean[][] centered) {
-		return new OutputStepImpl(content, centered, type);
+	public OutputStep newSection(String[] section, Boolean isCentered) {
+		sections.add(section);
+		centered.add(isCentered);
+		return new OutputStepImpl(sections, centered, type);
 	}
-	
-	public OutputStep emptyBox(int width, int height) {
-		
+
+	@Override
+	public OutputStep newSections(String[][] sections, boolean[] centered) {
+		int i = 0;
+		for (String[] section : sections) {
+			this.sections.add(section);
+			this.centered.add(centered[i++]);
+		}
+		return new OutputStepImpl(this.sections, this.centered, type);
+	}
+
+	@Override
+	public boolean printEmpty(int width, int height) {
 		// TODO
-		
-		return new OutputStepImpl(new String[0][0], new boolean[0][0], type);
+		return false;
 	}
 }

@@ -1,6 +1,7 @@
 package console.box;
 
-import console.box.OutputStepImpl.Type;
+import console.box.Box.Type;
+
 
 public class StepInterfaces {
 	
@@ -9,12 +10,15 @@ public class StepInterfaces {
 	}
 	
 	public interface ContentStep {
-		OutputStep newSections(String[][] content, boolean[][] centered);
-		OutputStep emptyBox(int width, int height);
+		OutputStep newSection(String[] section, Boolean isCentered);
+		OutputStep newSections(String[][] sections, boolean[] isCentered);
+		boolean printEmpty(int width, int height);
 	}
 	
 	public interface OutputStep {
-		boolean show();
-		boolean showExt();
+		OutputStep newSection(String[] section, Boolean isCentered);
+		OutputStep newSections(String[][] sections, boolean[] isCentered);
+		boolean print();
+		boolean printExt();
 	}
 }

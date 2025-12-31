@@ -29,7 +29,7 @@ public class Main {
 		TimeUtils.sleep(200); // to reduce the lag on startup
 		
 		while (true) {
-			int menuChoice = Menu.basic(menu, menuOptions);
+			int menuChoice = Menu.basic(menu, "Übungsmenü", menuOptions);
 
 			if (menuChoice == 0) {
 				ProgramMessages.closeProgram();
@@ -40,16 +40,14 @@ public class Main {
 	}
 
 	private static String[] createMenuString() {
-		String[] menu = new String[OPTIONS.length + 2];
-
-		menu[0] = "[═════] Übungsmenü [═════]";
+		String[] menu = new String[OPTIONS.length + 1];
 
 		for (int i = 0; i < OPTIONS.length; i++) {
 			String className = OPTIONS[i].getClass().getSimpleName();
-			menu[i + 1] = String.format(" %d - %s", i + 1, className);
+			menu[i] = String.format(" %d - %s", i + 1, className);
 		}
 
-		menu[OPTIONS.length + 1] = " 0 - Programm Schließen";
+		menu[OPTIONS.length] = " 0 - Programm Schließen";
 
 		return menu;
 	}

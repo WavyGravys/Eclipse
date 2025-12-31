@@ -1,12 +1,17 @@
 package console.menu;
 
+import console.box.Box;
+import console.box.Box.Type;
 import console.output.ConsoleAnimations;
 
 public class Display {
 
-	public static void displayMenu(Config config) {
-		ConsoleAnimations.typeln(config.menuStrings[0], config.typeDelay, 0, config.lineDelay, false);
-		ConsoleAnimations.linesWithDelay(config.menuStrings, config.lineDelay, 1);
+	public static void menu(Config config) {
+		Box.builder()
+				.lineType(Type.THICK_LINE)
+				.newSection(config.header, true)
+				.newSection(config.menuStrings, false)
+				.printExt();
 	}
 
 	public static void loadingBar(int dotAmount, int loadTime, boolean shouldPrintSkipping) {
