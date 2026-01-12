@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import console.box.Box.Type;
 import console.box.StepInterfaces.OutputStep;
+import console.menu.Menu;
 
 public class OutputStepImpl implements OutputStep {
 
@@ -42,5 +43,21 @@ public class OutputStepImpl implements OutputStep {
 	@Override
 	public boolean printExt() {
 		return Box.printExt(sections, centered, type);
+	}
+
+	@Override
+	public boolean printWait(int waitTime) {
+		Box.print(sections, centered, type);
+		Menu.loadingBar(Box.calcWidth(sections) + 2, waitTime, false);
+		System.out.println();
+		return true;
+	}
+
+	@Override
+	public boolean printExtWait(int waitTime) {
+		Box.printExt(sections, centered, type);
+		Menu.loadingBar(Box.calcWidth(sections) + 2, waitTime, false);
+		System.out.println();
+		return true;
 	}
 }

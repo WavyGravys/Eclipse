@@ -13,13 +13,13 @@ public class CarSharing implements Übung {
 	private static final Double[][] COSTS = { { 0.33, 0.31, 0.29, 0.27, 0.25 }, { 0.38, 0.36, 0.34, 0.32, 0.30 } };
 	// COSTS = [VehicleClassOne[CostAtCertainDistances],VehicleClassTwo[CostAtCertainDistances]]
 	private static final Double[] HOUR_COSTS = { 3.00, 4.00 };
-	public final String[] explainLines = new String[] { 
+	public final String[] explainStrings = new String[] { 
 			"In folgendem Programm geben Sie Ihre Car Sharing daten ein,",
 			"womit Ihre Kosten für den Nutzen des Autos errechnet werden.",
 			"Geben Sie während der Eingabe ein 'X' ein um das Programm zu schließen." };
 
 	public void start() {
-		ProgramMessages.explainProgram(explainLines);
+		ProgramMessages.printWelcomeMessageBoxed(explainStrings);
 
 		while (true) {
 			int[] data = getData();
@@ -45,7 +45,7 @@ public class CarSharing implements Übung {
 		return Input.builder()
 				.typeInteger()
 				.prompt(prompt)
-				.exitConditions("x")
+				.exitConditions("X")
 				.numberValidation()
 				.get();
 	}

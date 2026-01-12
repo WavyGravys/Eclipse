@@ -22,7 +22,7 @@ public class Bordcomputer implements Übung {
 	public void start() {
 		PKW auto = new PKW();
 		
-		ProgramMessages.explainProgram(explainStrings);
+		ProgramMessages.printWelcomeMessageBoxed(explainStrings);
 		
 		while(true) {
 			byte choice = (byte) Menu.basic(menu, ArrayUtils.integerRange(5));

@@ -19,34 +19,34 @@ public class Tankbelege implements Übung {
 	public void start() {
 		FuelConsumptionTracker tracker = new FuelConsumptionTracker();
 
-		ProgramMessages.explainProgram(explainStrings);
+		ProgramMessages.printWelcomeMessageBoxed(explainStrings);
 
-		Integer initialMileage = getInput("Aktueller Kilometerstand: ", 0d, true);
+		Integer initialMileage = getInput("┃ Aktueller Kilometerstand: ", 0d, true);
 		if (exitInput(initialMileage)) {
 			return;
 		}
 		tracker.setInitialMileage(initialMileage);
 
-		System.out.print("\n - Erster Tankbeleg - \n");
+		System.out.print(" - Erster Tankbeleg - \n");
 		while (true) {
-			Integer refuelAmount = getInput("Getankte Menge in Litern: ", 0d, false);
+			Integer refuelAmount = getInput("┃ Getankte Menge in Litern: ", 0d, false);
 			if (exitInput(refuelAmount)) {
 				return;
 			}
-			Integer currentMileage = getInput("Aktueller Kilometerstand: ", (double) tracker.getLastMileage(), false);
+			Integer currentMileage = getInput("┃ Aktueller Kilometerstand: ", (double) tracker.getLastMileage(), false);
 			if (exitInput(currentMileage)) {
 				return;
 			}
 
 			tracker.recordRefueling(refuelAmount, currentMileage);
 
-			Print.averageConsumption(tracker.getAverageConsumption());
+			printAverageConsumption(tracker.getAverageConsumption());
 
 			if (Menu.shouldExit()) {
 				return;
 			}
 
-			System.out.print("\n - Neuer Tankbeleg - \n");
+			System.out.print(" - Neuer Tankbeleg - \n");
 		}
 	}
 
@@ -66,12 +66,9 @@ public class Tankbelege implements Übung {
 		}
 		return false;
 	}
-}
-
-class Print {
-
-	public static void averageConsumption(double averageConsumption) {
-		StringBuilder sb = new StringBuilder("\nIhr Treibstoffverbrauch ist: ");
+	
+	public static void printAverageConsumption(double averageConsumption) {
+		StringBuilder sb = new StringBuilder("\n┃ Ihr Treibstoffverbrauch ist: ");
 		sb.append(averageConsumption);
 		sb.append(" L/100Km.\n");
 		String message = sb.toString();
@@ -80,6 +77,7 @@ class Print {
 		System.out.println();
 	}
 }
+
 
 class FuelConsumptionTracker {
 	private int totalRefuelAmount = 0;

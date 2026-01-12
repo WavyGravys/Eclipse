@@ -20,5 +20,7 @@ public class StepInterfaces {
 		OutputStep newSections(String[][] sections, boolean[] isCentered);
 		boolean print();
 		boolean printExt();
+		boolean printWait(int waitTime);
+		boolean printExtWait(int waitTime);
 	}
 }

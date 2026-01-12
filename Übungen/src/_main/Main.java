@@ -4,10 +4,14 @@ import console.menu.Menu;
 import console.output.ProgramMessages;
 import util.ArrayUtils;
 import util.TimeUtils;
+
 import übungen.ex01_tankbelege.Tankbelege;
 import übungen.ex02_carsharing.CarSharing;
 import übungen.ex03_feldvariablen.Feldvariablen;
 import übungen.ex04_bordcomputer.Bordcomputer;
+import übungen.ex05_bankkonten.Bankkonten;
+import übungen.ex06_arraylist.ArrayList;
+
 
 public class Main {
 
@@ -16,6 +20,8 @@ public class Main {
 			new CarSharing(), 
 			new Feldvariablen(),
 			new Bordcomputer(),
+			new Bankkonten(),
+			new ArrayList(),
 
 			/*
 			 * Add new Übungen here. It's Class must implent Übung.
@@ -44,10 +50,10 @@ public class Main {
 
 		for (int i = 0; i < OPTIONS.length; i++) {
 			String className = OPTIONS[i].getClass().getSimpleName();
-			menu[i] = String.format(" %d - %s", i + 1, className);
+			menu[i] = String.format("%d - %s", i + 1, className);
 		}
 
-		menu[OPTIONS.length] = " 0 - Programm Schließen";
+		menu[OPTIONS.length] = "0 - Programm Schließen";
 
 		return menu;
 	}

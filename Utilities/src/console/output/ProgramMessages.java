@@ -1,5 +1,6 @@
 package console.output;
 
+import console.box.Box;
 import util.TimeUtils;
 
 public class ProgramMessages {
@@ -13,6 +14,13 @@ public class ProgramMessages {
 		System.out.println(" (drücken Sie Enter um zu Skippen)");
 		TimeUtils.sleep(100);
 		return true;
+	}
+	
+	public static void printWelcomeMessageBoxed(String[] Strings) {
+		Box.builder()
+				.lineType(Box.Type.THICK_LINE)
+				.newSection(Strings, true)
+				.printWait(2000);
 	}
 	
 	public static void explainProgram(String[] explainLines) {

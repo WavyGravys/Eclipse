@@ -31,8 +31,8 @@ public class Box {
 	private static final char[] splitsExt = new char[]
 		{'\u251C','\u251C','\u2560','\u2523'};
 	
-	
-	public static boolean  print(ArrayList<String[]> sections, ArrayList<Boolean> centered, Type type) {
+		
+	public static boolean print(ArrayList<String[]> sections, ArrayList<Boolean> centered, Type type) {
 		int width = calcWidth(sections);
 		
 		printFirstLine(width, type);
@@ -71,7 +71,7 @@ public class Box {
 		}
 	}
 	
-	private static int calcWidth(ArrayList<String[]> sections) {
+	public static int calcWidth(ArrayList<String[]> sections) {
 		int width = 0;
 		for (String[] section : sections) {
 			for (String line : section) {

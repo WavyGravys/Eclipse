@@ -25,7 +25,7 @@ public class Feldvariablen implements Übung {
 		Saver saver = new Saver("feldvariablen");
 		
 		if (saver.isSaveFileEmpty()) {
-			ProgramMessages.explainProgram(explainStrings);
+			ProgramMessages.printWelcomeMessageBoxed(explainStrings);
 		}
 		
 		// get save and set menuState
