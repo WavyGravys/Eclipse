@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import input.Input;
+import menu.Menu;
+import speicher.SpeicherManager;
+
 public class Hauptprogramm {
-	
-	// voreinstellungen mit menge von wohnungen und namen dieser wohnungen
 	// ab 10 wohnungen fuzzy search insead of full menu?
 	
 	
 	// Menüs
-	private static String[] startMenü = new String[] {
+	private static String[] voreinstellungMenue = new String[] {
+		"1 - ",
+		"",
+		""
+	};
+	private static String[] startMenue = new String[] {
 			"1 - Neuer Mietvertag",
+			"2 - Wohnungen auflisten",
 			"0 - ENDE"
 	};
-	private static String[] hauptMenü = new String[] {
+	private static String[] hauptMenue = new String[] {
 			"1 - Neuer Mietvertag",
 			"2 - Aktuelle Vertragsliste",
 			"3 - Statistik (gesamt)",
@@ -23,7 +31,7 @@ public class Hauptprogramm {
 			"5 - Neu beginnen",
 			"0 - ENDE"
 	};
-	private static String[] wohnungsMenü = new String[] {
+	private static String[] wohnungsMenue = new String[] {
 			"1 - Erdgeschoss links",
 			"2 - Erdgeschoss mitte",
 			"3 - Erdgescchoss rechts",
@@ -33,72 +41,68 @@ public class Hauptprogramm {
 			"7 - Dachgeschoss links",
 			"8 - Dachgeschoss mitte",
 			"9 - Dachgeschoss rechts",
+			"0 - Abbrechen"
 	};
 	
 	// 
-	private static Map<String, Mietvertrag> verträgeDictionary = new HashMap<>();
-	private static byte vertragsmänge = 0;
+	private static ArrayList<Mietvertrag> vertraege = new ArrayList<Mietvertrag>();
+	private static int vertragsmaenge = 0;
 	
+	// generelle info
+	private static String vermieter;
+	private static int wohnungsmenge;
+	private static float standardmieteProQdrM = 15.38f;
 	
 	public static void main(String[] args) {
-		verträgeDictionary = Speicherer.auslesen();
+		// speichermanager inizialisieren
+		SpeicherManager speicher = new SpeicherManager("immobilienverwaltung");
 		
-		// Simpleres Menü, falls keine verträge gespeichert waren
-		if (vertragsmänge == 0) {
-			byte auswahl = Menü.simpel("Menü", startMenü);
+		vertragsmaenge = vertraege.size();
+		
+		
+		// Voreinstellungen bekommen falls der speicher leer ist
+		if (vermieter.isBlank()) {
+			// voreinstellungen
+			speicher.voreinstellungenÜberschreiben(voreinstellung());
 		}
 		
 		// Hauptschleife
 		while (true) {
 			// Hauptmenü auswahl bekommen
-			byte auswahl = Menü.simpel("Menü", hauptMenü);
+			byte auswahl = Menu.getAuswahl("Menü", hauptMenue);
 			
 			// Auswahl auswerten
 			switch (auswahl) {
-			case 1:
-				neuerVertrag();
-				break;
-			case 2:
-				vertragslisteDrucken();
-				break;
-			case 3:
-				gesamtstatistikDrucken();
-				break;
-			case 4:
-				// Vertragsmenü erstellen
-				ArrayList<String> vertragsMenü = new ArrayList<String>();
-				for (int i = 0; i < vertragsmänge; i++) {
-					verträgeDictionary.get(wohnungsMenü[i]);
-					vertragsMenü.add(wohnungsMenü[i]);
-				}
-				String[] x = vertragsMenü.toArray(new String[vertragsMenü.size()]);
-				
-				// Vertragsauswahl bekommen
-				byte vertragsauswahl = Menü.simpel("Verträge", vertragsMenü);
-				
-				// drucken der wohnungsspezifischer Statistik
-				wohnungsstatistikDrucken(vertragsliste[auswahl - 1]);
-				break;
-			case 5:
-				verträgeDictionary = new HashMap<>();
-				vertragsmänge = 0;
-				break;
-			case 0:
-				Speicherer.überschreiben(verträgeDictionary);
-				return;
+			case 1 -> neuerVertrag();
+			case 2 -> vertragslisteDrucken();
+			case 3 -> gesamtstatistikDrucken();
+			case 4 -> teilstatistikDrucken();
+			case 5 -> vertraege = new ArrayList<Mietvertrag>();
+			case 0 -> programmBeenden();
 			}
 			
 			// Änderungen speichern
-			Speicherer.überschreiben(vertragsliste);
+			speicherVertraege.überschreiben(vertraege);
 		}
+	}
+	
+	
+	private static void voreinstellung() {
+		vermieter = Input.getString("Name des Vermieters: ");
+		wohnungsmenge = Input.getInt("Anzahl an Wohnungen: ");
+		System.out.println("Drücken Sie Enter um zu überspringen.");
+		standardmieteProQdrM = Input.getInt("Standardmiete pro m² (€): ");
+		
+		
+		byte auswahl = Menu.getAuswahl("Menü", startMenue);
 	}
 	
 	
 	private static void neuerVertrag() {
 		// Informationen bekommen
-		String wohnung = wohnungsMenü[Menü.simpel("Wohnungsmenü", hauptMenü) - 1];
+		String wohnung = wohnungsMenue[Menu.getAuswahl("Wohnungsmenü", hauptMenue) - 1];
 		String mieter = Input.getString("Name des/der Mieters/in: ");
-		String vermieter = Input.getString("Ihr Name: ");
+		//String vermieter = Input.getString("Ihr Name: ");
 		int miete = Input.getInt("Miete (€/Monat): ");
 		int vertragslaufzeit = Input.getInt("Vertragslaufzeit (Monate): ");
 		float wohnfläche = Input.getFloat("Wohnfläche (m^2): ");
@@ -125,9 +129,29 @@ public class Hauptprogramm {
 		
 	}
 	
+	private static void teilstatistikDrucken() {
+		// Vertragsmenü erstellen
+		ArrayList<String> vertragsMenü = new ArrayList<String>();
+		for (int i = 0; i < vertragsmaenge; i++) {
+			verträgeDictionary.get(wohnungsMenue[i]);
+			vertragsMenü.add(wohnungsMenue[i]);
+		}
+		String[] x = vertragsMenü.toArray(new String[vertragsMenü.size()]);
+		getVertragsMenue();
+		
+		// Vertragsauswahl bekommen
+		byte vertragsauswahl = Menu.getAuswahl("Verträge", vertragsMenü);
+		
+		// drucken der wohnungsspezifischer Statistik
+		wohnungsstatistikDrucken(vertragsliste[auswahl - 1]);
+	}
 	
 	private static void wohnungsstatistikDrucken(Mietvertrag wohnung) {
 		
 	}
-
+	
+	
+	private static void programmBeenden() {
+		Speicherer.überschreiben(verträgeDictionary);
+	}
 }
