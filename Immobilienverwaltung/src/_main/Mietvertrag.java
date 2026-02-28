@@ -1,5 +1,7 @@
 package _main;
 
+import helfer.Box;
+
 public class Mietvertrag {
 	
 	// Initialisierung
@@ -8,30 +10,16 @@ public class Mietvertrag {
 	private String vermieter;
 	private int miete;				// €/Monat
 	private int vertragslaufzeit; 	// Monate
-	private float wohnfläche; 		// m^2
+	private float wohnflaeche; 		// m^2
 	private int zimmerAnzahl;
 	private int kostenStrom;		// €
 	private int kostenHeizung;		// €
 	private int kostenWasser;		// €
-	private int kostenInternet;		// ? €
-	
-	Object[] infoListe = new Object[] {
-			wohnung,
-			mieter,
-			vermieter,
-			miete,
-			vertragslaufzeit,
-			wohnfläche,
-			zimmerAnzahl,
-			kostenStrom,
-			kostenHeizung,
-			kostenWasser,
-			kostenInternet
-	};
+	private int kostenInternet;		// €
 	
 	// Konstruktor
-	Mietvertrag(String wohnung, String mieter, String vermieter, 
-				int miete, int vertragslaufzeit, float wohnfläche,
+	public Mietvertrag(String wohnung, String mieter, String vermieter, 
+				int miete, int vertragslaufzeit, float wohnflaeche,
 				int zimmerAnzahl, int kostenStrom, int kostenHeizung, 
 				int kostenWasser, int kostenInternet) {
 		this.wohnung = wohnung;
@@ -39,7 +27,7 @@ public class Mietvertrag {
 		this.vermieter = vermieter;
 		this.miete = miete;
 		this.vertragslaufzeit = vertragslaufzeit;
-		this.wohnfläche = wohnfläche;
+		this.wohnflaeche = wohnflaeche;
 		this.zimmerAnzahl = zimmerAnzahl;
 		this.kostenStrom = kostenStrom;
 		this.kostenHeizung = kostenHeizung;
@@ -48,19 +36,64 @@ public class Mietvertrag {
 	}
 	
 	
-	/* - Getter - */
+	// Getter (Kapselung)
 	
-	// ...
+	public String getWohnung() {
+	    return wohnung;
+	}
+
+	public String getMieter() {
+	    return mieter;
+	}
+
+	public String getVermieter() {
+	    return vermieter;
+	}
+
+	public int getMiete() {
+	    return miete;
+	}
+
+	public int getVertragslaufzeit() {
+	    return vertragslaufzeit;
+	}
+
+	public float getWohnflaeche() {
+	    return wohnflaeche;
+	}
+
+	public int getZimmerAnzahl() {
+	    return zimmerAnzahl;
+	}
+
+	public int getKostenStrom() {
+	    return kostenStrom;
+	}
+
+	public int getKostenHeizung() {
+	    return kostenHeizung;
+	}
+
+	public int getKostenWasser() {
+	    return kostenWasser;
+	}
+
+	public int getKostenInternet() {
+	    return kostenInternet;
+	}
 	
+	public int getGesamtkosten() {
+		return kostenStrom + kostenHeizung + kostenWasser + kostenInternet;
+	}
 	
 	// Druckt alle Informationen in die Console.
 	public void printInfo() {
-		Object[] infoStringListe = new Object[] {
+		String[] infoStringListe = new String[] {
 				"Der Mieter heißt "+mieter+".",
 				"Der Vermieter heißt "+vermieter+".",
 				"Die Miete ist "+miete+" €/Monat.",
 				"Die Vertragslaufzeit ist "+vertragslaufzeit+" Monate.",
-				"Die Wohnfläche ist "+wohnfläche+" m^2.",
+				"Die Wohnfläche ist "+wohnflaeche+" m^2.",
 				"Die ZimmerAnzahl ist "+zimmerAnzahl+".",
 				"Die Stromkosten sind "+kostenStrom+" €.",
 				"Die Heizkosten sind "+kostenHeizung+" €.",
@@ -71,5 +104,11 @@ public class Mietvertrag {
 		Box.basic(wohnung, infoStringListe, false);
 	}
 	
-	
+	public String[] getDaten() {
+		return new String[] {wohnung, mieter, vermieter, 
+				Integer.toString(miete), Integer.toString(vertragslaufzeit), 
+				Float.toString(wohnflaeche), Integer.toString(zimmerAnzahl), 
+				Integer.toString(kostenStrom), Integer.toString(kostenHeizung), 
+				Integer.toString(kostenWasser), Integer.toString(kostenInternet)};
+	}
 }

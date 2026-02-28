@@ -1,0 +1,14 @@
+T
+9
+12.0
+2 - Erdgeschoss mitte
+Tyler
+Kyra
+800
+18
+200.0
+4
+100
+200
+300
+400
